@@ -41,3 +41,16 @@ curl -X POST http://localhost:4000/api/incomes \
 ```
 
 Replace `YOUR_TOKEN` with the token returned by `/api/login`.
+
+## Registering a Fixed Expense
+
+Once authenticated you can create a recurring monthly expense:
+
+```bash
+curl -X POST http://localhost:4000/api/fixed-expenses \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 800.00, "description": "Rent", "due_date": "2024-01-05"}'
+```
+
+The `due_date` should be any valid day of the month (1-31) in `YYYY-MM-DD` format.
