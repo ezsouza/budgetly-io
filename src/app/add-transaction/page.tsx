@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { Suspense, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -76,119 +76,121 @@ export default function AddTransaction() {
           <CardHeader>
             <CardTitle>Transaction Details</CardTitle>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Transaction Type */}
-              <div className="space-y-2">
-                <Label htmlFor="type">Transaction Type</Label>
-                <Select
-                  value={formData.type}
-                  onValueChange={(value: TransactionType) => setFormData({ ...formData, type: value, category: "" })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="income">Income</SelectItem>
-                    <SelectItem value="fixed">Fixed Expense</SelectItem>
-                    <SelectItem value="variable">Variable Expense</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+          <Suspense fallback={<div>Loading...</div>}>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Transaction Type */}
+                <div className="space-y-2">
+                  <Label htmlFor="type">Transaction Type</Label>
+                  <Select
+                    value={formData.type}
+                    onValueChange={(value: TransactionType) => setFormData({ ...formData, type: value, category: "" })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="income">Income</SelectItem>
+                      <SelectItem value="fixed">Fixed Expense</SelectItem>
+                      <SelectItem value="variable">Variable Expense</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              {/* Amount */}
-              <div className="space-y-2">
-                <Label htmlFor="amount">Amount ($)</Label>
-                <Input
-                  id="amount"
-                  type="number"
-                  step="0.01"
-                  value={formData.amount}
-                  onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                  placeholder="0.00"
-                  required
-                />
-              </div>
+                {/* Amount */}
+                <div className="space-y-2">
+                  <Label htmlFor="amount">Amount ($)</Label>
+                  <Input
+                    id="amount"
+                    type="number"
+                    step="0.01"
+                    value={formData.amount}
+                    onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                    placeholder="0.00"
+                    required
+                  />
+                </div>
 
-              {/* Description */}
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Enter transaction description"
-                  required
-                />
-              </div>
+                {/* Description */}
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Enter transaction description"
+                    required
+                  />
+                </div>
 
-              {/* Category */}
-              <div className="space-y-2">
-                <Label htmlFor="category">Category</Label>
-                <Select
-                  value={formData.category}
-                  onValueChange={(value) => setFormData({ ...formData, category: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories[formData.type].map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                {/* Category */}
+                <div className="space-y-2">
+                  <Label htmlFor="category">Category</Label>
+                  <Select
+                    value={formData.category}
+                    onValueChange={(value) => setFormData({ ...formData, category: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories[formData.type].map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              {/* Date */}
-              <div className="space-y-2">
-                <Label htmlFor="date">Date</Label>
-                <Input
-                  id="date"
-                  type="date"
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  required
-                />
-              </div>
+                {/* Date */}
+                <div className="space-y-2">
+                  <Label htmlFor="date">Date</Label>
+                  <Input
+                    id="date"
+                    type="date"
+                    value={formData.date}
+                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                    required
+                  />
+                </div>
 
-              {/* Recurring Options for Fixed Expenses */}
-              {formData.type === "fixed" && (
-                <div className="space-y-4 p-4 bg-slate-50 rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="recurring">Recurring Transaction</Label>
-                    <Switch
-                      id="recurring"
-                      checked={formData.isRecurring}
-                      onCheckedChange={(checked) => setFormData({ ...formData, isRecurring: checked })}
-                    />
-                  </div>
-
-                  {formData.isRecurring && (
-                    <div className="space-y-2">
-                      <Label htmlFor="recurringMonths">Number of Months</Label>
-                      <Input
-                        id="recurringMonths"
-                        type="number"
-                        min="1"
-                        value={formData.recurringMonths}
-                        onChange={(e) => setFormData({ ...formData, recurringMonths: Number.parseInt(e.target.value) })}
-                        placeholder="12"
+                {/* Recurring Options for Fixed Expenses */}
+                {formData.type === "fixed" && (
+                  <div className="space-y-4 p-4 bg-slate-50 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="recurring">Recurring Transaction</Label>
+                      <Switch
+                        id="recurring"
+                        checked={formData.isRecurring}
+                        onCheckedChange={(checked) => setFormData({ ...formData, isRecurring: checked })}
                       />
                     </div>
-                  )}
-                </div>
-              )}
 
-              {/* Submit Button */}
-              <Button type="submit" className="w-full flex items-center gap-2">
-                <Save className="w-4 h-4" />
-                Save Transaction
-              </Button>
-            </form>
-          </CardContent>
+                    {formData.isRecurring && (
+                      <div className="space-y-2">
+                        <Label htmlFor="recurringMonths">Number of Months</Label>
+                        <Input
+                          id="recurringMonths"
+                          type="number"
+                          min="1"
+                          value={formData.recurringMonths}
+                          onChange={(e) => setFormData({ ...formData, recurringMonths: Number.parseInt(e.target.value) })}
+                          placeholder="12"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Submit Button */}
+                <Button type="submit" className="w-full flex items-center gap-2">
+                  <Save className="w-4 h-4" />
+                  Save Transaction
+                </Button>
+              </form>
+            </CardContent>
+          </Suspense>
         </Card>
       </div>
     </div>
