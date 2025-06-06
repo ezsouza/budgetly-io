@@ -1,12 +1,14 @@
 const express = require('express');
 const sequelize = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
+const incomeRoutes = require('./routes/incomeRoutes');
 require('dotenv').config();
 
 const app = express();
 app.use(express.json());
 
 app.use('/api', authRoutes); // Prefix routes with /api
+app.use('/api', incomeRoutes); // Routes for incomes
 
 // Connect to the database and start the server
 async function start() {

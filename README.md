@@ -28,3 +28,16 @@ npm run dev
 ```
 
 The application will be available at `http://localhost:3000`.
+
+## Registering an Income
+
+After obtaining a JWT token from the login endpoint, you can register a new income:
+
+```bash
+curl -X POST http://localhost:4000/api/incomes \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 100.50, "description": "Freelance", "date": "2024-01-15"}'
+```
+
+Replace `YOUR_TOKEN` with the token returned by `/api/login`.
