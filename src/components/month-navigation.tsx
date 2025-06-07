@@ -3,12 +3,14 @@
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
+import { useI18n } from "@/lib/i18n-context"
 
 interface MonthNavigationProps {
   currentMonth: string
 }
 
 export function MonthNavigation({ currentMonth }: MonthNavigationProps) {
+  const { t, lang } = useI18n()
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -40,20 +42,21 @@ export function MonthNavigation({ currentMonth }: MonthNavigationProps) {
   const formatMonth = (monthStr: string) => {
     const [year, month] = monthStr.split("-")
     const date = new Date(Number.parseInt(year), Number.parseInt(month) - 1)
-    return date.toLocaleDateString("en-US", { month: "long", year: "numeric" })
+    const locale = lang === "pt" ? "pt-BR" : lang === "es" ? "es-ES" : "en-US"
+    return date.toLocaleDateString(locale, { month: "long", year: "numeric" })
   }
 
   return (
     <div className="flex items-center justify-between bg-white rounded-lg p-4 shadow-sm">
       <Button variant="outline" size="sm" onClick={() => navigateMonth("prev")} className="flex items-center gap-2">
         <ChevronLeft className="w-4 h-4" />
-        Previous
+        {t("monthNavigation.previous")}
       </Button>
 
       <h2 className="text-xl font-semibold text-slate-900">{formatMonth(currentMonth)}</h2>
 
       <Button variant="outline" size="sm" onClick={() => navigateMonth("next")} className="flex items-center gap-2">
-        Next
+        {t("monthNavigation.next")}
         <ChevronRight className="w-4 h-4" />
       </Button>
     </div>

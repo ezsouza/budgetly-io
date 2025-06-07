@@ -1,3 +1,5 @@
+"use client"
+
 import { Suspense } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -8,8 +10,10 @@ import { FinancialSummary } from "@/components/financial-summary"
 import { RecentTransactions } from "@/components/recent-transactions"
 import { ExpenseChart } from "@/components/expense-chart"
 import { getCurrentMonth, getMonthData } from "@/lib/finance-data"
+import { useI18n } from "@/lib/i18n-context"
 
 export default function Dashboard() {
+  const { t } = useI18n()
   const currentMonth = getCurrentMonth()
   const monthData = getMonthData(currentMonth)
 
@@ -19,19 +23,19 @@ export default function Dashboard() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Finance Tracker</h1>
-            <p className="text-slate-600">Manage your monthly finances with ease</p>
+            <h1 className="text-3xl font-bold text-slate-900">{t("dashboard.title")}</h1>
+            <p className="text-slate-600">{t("dashboard.subtitle")}</p>
           </div>
           <Link href="/add-transaction">
             <Button className="flex items-center gap-2">
               <Plus className="w-4 h-4" />
-              Add Transaction
+              {t("dashboard.addTransaction")}
             </Button>
           </Link>
         </div>
 
           {/* Month Navigation */}
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<div>{t("common.loading")}</div>}>
             <MonthNavigation currentMonth={currentMonth} />
           </Suspense>
 
@@ -44,7 +48,7 @@ export default function Dashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="w-5 h-5" />
-                Expense Breakdown
+                {t("dashboard.expenseBreakdown")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -58,7 +62,7 @@ export default function Dashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="w-5 h-5" />
-                Recent Transactions
+                {t("dashboard.recentTransactions")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -70,26 +74,26 @@ export default function Dashboard() {
         {/* Quick Actions */}
         <Card>
           <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+            <CardTitle>{t("dashboard.quickActions")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Link href="/add-transaction?type=income">
                 <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
                   <TrendingUp className="w-6 h-6 text-green-600" />
-                  Add Income
+                  {t("dashboard.addIncome")}
                 </Button>
               </Link>
               <Link href="/add-transaction?type=fixed">
                 <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
                   <DollarSign className="w-6 h-6 text-blue-600" />
-                  Add Fixed Expense
+                  {t("dashboard.addFixedExpense")}
                 </Button>
               </Link>
               <Link href="/add-transaction?type=variable">
                 <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
                   <TrendingDown className="w-6 h-6 text-red-600" />
-                  Add Variable Expense
+                  {t("dashboard.addVariableExpense")}
                 </Button>
               </Link>
             </div>

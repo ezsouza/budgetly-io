@@ -1,12 +1,16 @@
+"use client"
+
 import { Badge } from "@/components/ui/badge"
 import type { Transaction } from "@/lib/types"
 import { TrendingUp, TrendingDown, DollarSign } from "lucide-react"
+import { useI18n } from "@/lib/i18n-context"
 
 interface RecentTransactionsProps {
   transactions: Transaction[]
 }
 
 export function RecentTransactions({ transactions }: RecentTransactionsProps) {
+  const { t, lang } = useI18n()
   const recentTransactions = transactions
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5)
@@ -38,16 +42,22 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
   }
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
+    const locale = lang === "pt" ? "pt-BR" : lang === "es" ? "es-ES" : "en-US"
+    return new Intl.NumberFormat(locale, {
       style: "currency",
       currency: "USD",
     }).format(amount)
   }
 
+  const formatDate = (date: Date) => {
+    const locale = lang === "pt" ? "pt-BR" : lang === "es" ? "es-ES" : "en-US"
+    return new Date(date).toLocaleDateString(locale)
+  }
+
   if (recentTransactions.length === 0) {
     return (
       <div className="text-center py-8 text-slate-500">
-        No transactions yet. Add your first transaction to get started!
+        {t("recentTransactions.noTransactions")}
       </div>
     )
   }
@@ -62,9 +72,9 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
               <p className="font-medium text-slate-900">{transaction.description}</p>
               <div className="flex items-center gap-2 mt-1">
                 <Badge variant="secondary" className={getTypeColor(transaction.type)}>
-                  {transaction.type}
+                  {t(`type.${transaction.type}`)}
                 </Badge>
-                <span className="text-sm text-slate-500">{transaction.category}</span>
+                <span className="text-sm text-slate-500">{t(`category.${transaction.category}`)}</span>
               </div>
             </div>
           </div>
@@ -73,7 +83,7 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
               {transaction.type === "income" ? "+" : "-"}
               {formatCurrency(transaction.amount)}
             </p>
-            <p className="text-sm text-slate-500">{new Date(transaction.date).toLocaleDateString()}</p>
+            <p className="text-sm text-slate-500">{formatDate(transaction.date)}</p>
           </div>
         </div>
       ))}

@@ -1,13 +1,17 @@
+"use client"
+
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import type { Transaction } from "@/lib/types"
 import { TrendingUp, TrendingDown, DollarSign, Trash2 } from "lucide-react"
+import { useI18n } from "@/lib/i18n-context"
 
 interface TransactionListProps {
   transactions: Transaction[]
 }
 
 export function TransactionList({ transactions }: TransactionListProps) {
+  const { t, lang } = useI18n()
   const getTypeIcon = (type: string) => {
     switch (type) {
       case "income":
@@ -35,10 +39,16 @@ export function TransactionList({ transactions }: TransactionListProps) {
   }
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
+    const locale = lang === "pt" ? "pt-BR" : lang === "es" ? "es-ES" : "en-US"
+    return new Intl.NumberFormat(locale, {
       style: "currency",
       currency: "USD",
     }).format(amount)
+  }
+
+  const formatDate = (date: Date) => {
+    const locale = lang === "pt" ? "pt-BR" : lang === "es" ? "es-ES" : "en-US"
+    return new Date(date).toLocaleDateString(locale)
   }
 
   const sortedTransactions = transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -46,8 +56,8 @@ export function TransactionList({ transactions }: TransactionListProps) {
   if (transactions.length === 0) {
     return (
       <div className="text-center py-12 text-slate-500">
-        <p className="text-lg">No transactions found for this month.</p>
-        <p className="text-sm mt-2">Add your first transaction to get started!</p>
+        <p className="text-lg">{t("transactionList.noTransactions1")}</p>
+        <p className="text-sm mt-2">{t("transactionList.noTransactions2")}</p>
       </div>
     )
   }
@@ -66,17 +76,17 @@ export function TransactionList({ transactions }: TransactionListProps) {
                 <h3 className="font-medium text-slate-900">{transaction.description}</h3>
                 {transaction.isRecurring && (
                   <Badge variant="outline" className="text-xs">
-                    Recurring
+                    {t("transactionList.recurring")}
                   </Badge>
                 )}
               </div>
               <div className="flex items-center gap-2 text-sm text-slate-600">
                 <Badge variant="secondary" className={getTypeColor(transaction.type)}>
-                  {transaction.type}
+                  {t(`type.${transaction.type}`)}
                 </Badge>
-                <span>{transaction.category}</span>
+                <span>{t(`category.${transaction.category}`)}</span>
                 <span>•</span>
-                <span>{new Date(transaction.date).toLocaleDateString()}</span>
+                <span>{formatDate(transaction.date)}</span>
               </div>
             </div>
           </div>
