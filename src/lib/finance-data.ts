@@ -72,6 +72,13 @@ function occursInMonth(transaction: Transaction, year: number, month: number): b
   if (monthsDiff < 0) return false
   if (!transaction.isRecurring && monthsDiff !== 0) return false
 
+  if (transaction.endDate) {
+    const endYear = transaction.endDate.getFullYear()
+    const endMonth = transaction.endDate.getMonth() + 1
+    const diffToEnd = (year - endYear) * 12 + (month - endMonth)
+    if (diffToEnd >= 0) return false
+  }
+
   if (transaction.isRecurring) {
     if (transaction.recurringMonths && monthsDiff >= transaction.recurringMonths) return false
 
@@ -118,6 +125,16 @@ export function getMonthData(month: string): MonthData {
 
 export function addTransaction(transaction: Transaction): void {
   transactions.push(transaction)
+}
+
+export function updateTransaction(id: string, updated: Partial<Transaction>): void {
+  transactions = transactions.map((t) =>
+    t.id === id ? { ...t, ...updated } : t
+  )
+}
+
+export function getTransactionById(id: string): Transaction | undefined {
+  return transactions.find((t) => t.id === id)
 }
 
 export function deleteTransaction(id: string): void {
