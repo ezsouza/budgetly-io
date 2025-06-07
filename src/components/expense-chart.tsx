@@ -11,7 +11,9 @@ export function ExpenseChart({ data }: ExpenseChartProps) {
     .filter((t) => t.type !== "income")
     .reduce(
       (acc, transaction) => {
-        acc[transaction.category] = (acc[transaction.category] || 0) + transaction.amount
+        acc[transaction.category] =
+          (acc[transaction.category] || 0) + transaction.amount
+        return acc
       },
       {} as Record<string, number>,
     )
