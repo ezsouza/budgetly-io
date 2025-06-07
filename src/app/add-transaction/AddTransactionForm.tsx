@@ -34,6 +34,7 @@ export default function AddTransactionForm() {
     customMonths: [] as number[],
     startDate: new Date().toISOString().split("T")[0],
     endDate: "",
+    noEndDate: true,
   })
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -51,7 +52,11 @@ export default function AddTransactionForm() {
       recurrencePattern: formData.recurrencePattern,
       customMonths: formData.customMonths,
       startDate: formData.startDate ? new Date(formData.startDate) : undefined,
-      endDate: formData.endDate ? new Date(formData.endDate) : undefined,
+      endDate: formData.noEndDate
+        ? undefined
+        : formData.endDate
+        ? new Date(formData.endDate)
+        : undefined,
     }
 
     addTransaction(transaction)
@@ -186,10 +191,24 @@ export default function AddTransactionForm() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="endDate">{t("addTransaction.endDate")}</Label>
+                        <div className="flex items-center justify-between">
+                          <Label htmlFor="noEndDate">{t("addTransaction.noEndDate")}</Label>
+                          <Switch
+                            id="noEndDate"
+                            checked={formData.noEndDate}
+                            onCheckedChange={(checked) =>
+                              setFormData({
+                                ...formData,
+                                noEndDate: checked,
+                                ...(checked ? { endDate: "" } : {}),
+                              })
+                            }
+                          />
+                        </div>
                         <Input
                           id="endDate"
                           type="date"
+                          disabled={formData.noEndDate}
                           value={formData.endDate}
                           onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
                         />
