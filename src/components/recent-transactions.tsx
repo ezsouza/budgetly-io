@@ -60,8 +60,11 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
   return (
     <div className="space-y-4">
       {recentTransactions.map((transaction) => (
-        <div key={transaction.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-          <div className="flex items-center gap-3">
+        <div
+          key={transaction.id}
+          className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-slate-50 rounded-lg"
+        >
+          <div className="flex items-start gap-3 flex-1">
             {getTypeIcon(transaction.type)}
             <div>
               <p className="font-medium text-slate-900">{transaction.description}</p>
@@ -73,7 +76,7 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
               </div>
             </div>
           </div>
-          <div className="text-right">
+          <div className="mt-2 sm:mt-0 text-right">
             <p className={`font-semibold ${transaction.type === "income" ? "text-green-600" : "text-red-600"}`}>
               {transaction.type === "income" ? "+" : "-"}
               {formatCurrency(transaction.amount)}

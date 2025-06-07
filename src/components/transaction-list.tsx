@@ -63,9 +63,9 @@ export function TransactionList({ transactions }: TransactionListProps) {
       {sortedTransactions.map((transaction) => (
         <div
           key={transaction.id}
-          className="flex items-center justify-between p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow"
+          className="flex flex-col sm:flex-row justify-between gap-3 p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow"
         >
-          <div className="flex items-center gap-4">
+          <div className="flex items-start gap-4 flex-1">
             {getTypeIcon(transaction.type)}
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
@@ -86,7 +86,7 @@ export function TransactionList({ transactions }: TransactionListProps) {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 sm:justify-end mt-2 sm:mt-0">
             <div className="text-right">
               <p
                 className={`text-lg font-semibold ${transaction.type === "income" ? "text-green-600" : "text-red-600"}`}
