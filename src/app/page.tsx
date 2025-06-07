@@ -30,8 +30,10 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        {/* Month Navigation */}
-        <MonthNavigation currentMonth={currentMonth} />
+          {/* Month Navigation */}
+          <Suspense fallback={<div>Loading...</div>}>
+            <MonthNavigation currentMonth={currentMonth} />
+          </Suspense>
 
         {/* Financial Summary Cards */}
         <FinancialSummary data={monthData} />
