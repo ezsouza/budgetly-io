@@ -1,3 +1,5 @@
+"use client"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Plus } from "lucide-react"
@@ -6,8 +8,10 @@ import { Suspense } from "react"
 import { TransactionList } from "@/components/transaction-list"
 import { MonthNavigation } from "@/components/month-navigation"
 import { getCurrentMonth, getMonthData } from "@/lib/finance-data"
+import { useI18n } from "@/lib/i18n-context"
 
 export default function TransactionsPage() {
+  const { t } = useI18n()
   const currentMonth = getCurrentMonth()
   const monthData = getMonthData(currentMonth)
 
@@ -23,27 +27,27 @@ export default function TransactionsPage() {
               </Button>
             </Link>
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">All Transactions</h1>
-              <p className="text-slate-600">View and manage your transactions</p>
+              <h1 className="text-2xl font-bold text-slate-900">{t("transactionsPage.allTransactions")}</h1>
+              <p className="text-slate-600">{t("transactionsPage.viewManage")}</p>
             </div>
           </div>
           <Link href="/add-transaction">
             <Button className="flex items-center gap-2">
               <Plus className="w-4 h-4" />
-              Add Transaction
+              {t("dashboard.addTransaction")}
             </Button>
           </Link>
         </div>
 
         {/* Month Navigation */}
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div>{t("common.loading")}</div>}>
           <MonthNavigation currentMonth={currentMonth} />
         </Suspense>
 
         {/* Transactions */}
         <Card>
           <CardHeader>
-            <CardTitle>Transactions for {currentMonth}</CardTitle>
+            <CardTitle>{t("transactionsPage.transactionsFor")} {currentMonth}</CardTitle>
           </CardHeader>
           <CardContent>
             <TransactionList transactions={monthData.transactions} />
