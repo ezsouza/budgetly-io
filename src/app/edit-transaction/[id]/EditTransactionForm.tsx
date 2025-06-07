@@ -20,22 +20,44 @@ export default function EditTransactionForm() {
   const router = useRouter()
   const params = useParams()
   const { t } = useI18n()
-  const transaction = getTransactionById(params.id as string)
 
   const [formData, setFormData] = useState({
-    type: transaction?.type || "variable",
-    amount: transaction?.amount.toString() || "",
-    description: transaction?.description || "",
-    category: transaction?.category || "",
-    date: transaction ? new Date(transaction.date).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
-    isRecurring: transaction?.isRecurring || false,
-    recurringMonths: transaction?.recurringMonths || 1,
-    recurrencePattern: transaction?.recurrencePattern || "monthly",
-    customMonths: transaction?.customMonths || ([] as number[]),
-    startDate: transaction?.startDate ? transaction.startDate.toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
-    endDate: transaction?.endDate ? transaction.endDate.toISOString().split("T")[0] : "",
-    noEndDate: !transaction?.endDate,
+    type: "variable" as TransactionType,
+    amount: "",
+    description: "",
+    category: "",
+    date: new Date().toISOString().split("T")[0],
+    isRecurring: false,
+    recurringMonths: 1,
+    recurrencePattern: "monthly",
+    customMonths: [] as number[],
+    startDate: new Date().toISOString().split("T")[0],
+    endDate: "",
+    noEndDate: true,
   })
+
+  useEffect(() => {
+    if (!params.id) return
+    const loaded = getTransactionById(params.id as string)
+    if (loaded) {
+      setFormData({
+        type: loaded.type,
+        amount: loaded.amount.toString(),
+        description: loaded.description,
+        category: loaded.category,
+        date: new Date(loaded.date).toISOString().split("T")[0],
+        isRecurring: loaded.isRecurring || false,
+        recurringMonths: loaded.recurringMonths || 1,
+        recurrencePattern: loaded.recurrencePattern || "monthly",
+        customMonths: loaded.customMonths || [],
+        startDate: loaded.startDate
+          ? loaded.startDate.toISOString().split("T")[0]
+          : new Date().toISOString().split("T")[0],
+        endDate: loaded.endDate ? loaded.endDate.toISOString().split("T")[0] : "",
+      noEndDate: !loaded.endDate,
+    })
+  }
+  }, [params.id])
 
   useEffect(() => {
     if (formData.startDate && formData.endDate && !formData.noEndDate) {
@@ -65,7 +87,7 @@ export default function EditTransactionForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!transaction) return
+    if (!params.id) return
 
     const updated = {
       type: formData.type as TransactionType,
@@ -85,7 +107,7 @@ export default function EditTransactionForm() {
         : undefined,
     }
 
-    updateTransaction(transaction.id, updated)
+    updateTransaction(params.id as string, updated)
     router.push("/")
   }
 
@@ -106,8 +128,8 @@ export default function EditTransactionForm() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">{t("addTransaction.headerTitle")}</h1>
-            <p className="text-slate-600">{t("addTransaction.headerSubtitle")}</p>
+            <h1 className="text-2xl font-bold text-slate-900">{t("editTransaction.headerTitle")}</h1>
+            <p className="text-slate-600">{t("editTransaction.headerSubtitle")}</p>
           </div>
         </div>
 
@@ -307,7 +329,7 @@ export default function EditTransactionForm() {
               {/* Submit Button */}
               <Button type="submit" className="w-full flex items-center gap-2">
                 <Save className="w-4 h-4" />
-                {t("addTransaction.save")}
+                {t("editTransaction.save")}
               </Button>
             </form>
           </CardContent>
