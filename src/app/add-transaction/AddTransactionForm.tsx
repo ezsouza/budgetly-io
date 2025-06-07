@@ -30,6 +30,9 @@ export default function AddTransactionForm() {
     date: new Date().toISOString().split("T")[0],
     isRecurring: false,
     recurringMonths: 1,
+    recurrencePattern: "monthly",
+    customMonths: [] as number[],
+    startDate: new Date().toISOString().split("T")[0],
   })
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -44,6 +47,9 @@ export default function AddTransactionForm() {
       date: new Date(formData.date),
       isRecurring: formData.isRecurring,
       recurringMonths: formData.recurringMonths,
+      recurrencePattern: formData.recurrencePattern,
+      customMonths: formData.customMonths,
+      startDate: formData.startDate ? new Date(formData.startDate) : undefined,
     }
 
     addTransaction(transaction)
@@ -119,7 +125,6 @@ export default function AddTransactionForm() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder={t("addTransaction.enterDescription")}
-                  required
                 />
               </div>
 
@@ -168,17 +173,77 @@ export default function AddTransactionForm() {
                   </div>
 
                   {formData.isRecurring && (
-                    <div className="space-y-2">
-                      <Label htmlFor="recurringMonths">{t("addTransaction.numberOfMonths")}</Label>
-                      <Input
-                        id="recurringMonths"
-                        type="number"
-                        min="1"
-                        value={formData.recurringMonths}
-                        onChange={(e) => setFormData({ ...formData, recurringMonths: Number.parseInt(e.target.value) })}
-                        placeholder="12"
-                      />
-                    </div>
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="startDate">{t("addTransaction.startDate")}</Label>
+                        <Input
+                          id="startDate"
+                          type="date"
+                          value={formData.startDate}
+                          onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="pattern">{t("addTransaction.recurrencePattern")}</Label>
+                        <Select
+                          value={formData.recurrencePattern}
+                          onValueChange={(value) => setFormData({ ...formData, recurrencePattern: value as any })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="monthly">{t("addTransaction.monthly")}</SelectItem>
+                            <SelectItem value="semi-annually">{t("addTransaction.semiAnnually")}</SelectItem>
+                            <SelectItem value="annually">{t("addTransaction.annually")}</SelectItem>
+                            <SelectItem value="custom">{t("addTransaction.custom")}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {formData.recurrencePattern === "custom" && (
+                        <div className="space-y-2">
+                          <Label>{t("addTransaction.selectMonths")}</Label>
+                          <div className="grid grid-cols-3 gap-2">
+                            {Array.from({ length: 12 }).map((_, idx) => {
+                              const monthName = new Date(0, idx).toLocaleString("default", { month: "short" })
+                              const checked = formData.customMonths.includes(idx + 1)
+                              return (
+                                <label key={idx} className="flex items-center gap-1 text-sm">
+                                  <input
+                                    type="checkbox"
+                                    checked={checked}
+                                    onChange={(e) => {
+                                      const months = [...formData.customMonths]
+                                      if (e.target.checked) {
+                                        months.push(idx + 1)
+                                      } else {
+                                        months.splice(months.indexOf(idx + 1), 1)
+                                      }
+                                      setFormData({ ...formData, customMonths: months })
+                                    }}
+                                  />
+                                  {monthName}
+                                </label>
+                              )
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="space-y-2">
+                        <Label htmlFor="recurringMonths">{t("addTransaction.numberOfMonths")}</Label>
+                        <Input
+                          id="recurringMonths"
+                          type="number"
+                          min="1"
+                          value={formData.recurringMonths}
+                          onChange={(e) => setFormData({ ...formData, recurringMonths: Number.parseInt(e.target.value) })}
+                          placeholder="12"
+                        />
+                      </div>
+                    </>
                   )}
                 </div>
               )}

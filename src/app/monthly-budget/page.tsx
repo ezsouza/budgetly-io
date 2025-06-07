@@ -5,12 +5,14 @@ import { MonthNavigation } from "@/components/month-navigation"
 import { FinancialSummary } from "@/components/financial-summary"
 import { ExpenseChart } from "@/components/expense-chart"
 import { getCurrentMonth, getMonthData } from "@/lib/finance-data"
+import { useSearchParams } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useI18n } from "@/lib/i18n-context"
 
 export default function MonthlyBudgetPage() {
   const { t } = useI18n()
-  const currentMonth = getCurrentMonth()
+  const searchParams = useSearchParams()
+  const currentMonth = searchParams.get("month") || getCurrentMonth()
   const monthData = getMonthData(currentMonth)
 
   return (

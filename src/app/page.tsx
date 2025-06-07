@@ -10,11 +10,13 @@ import { FinancialSummary } from "@/components/financial-summary"
 import { RecentTransactions } from "@/components/recent-transactions"
 import { ExpenseChart } from "@/components/expense-chart"
 import { getCurrentMonth, getMonthData } from "@/lib/finance-data"
+import { useSearchParams } from "next/navigation"
 import { useI18n } from "@/lib/i18n-context"
 
 export default function Dashboard() {
   const { t } = useI18n()
-  const currentMonth = getCurrentMonth()
+  const searchParams = useSearchParams()
+  const currentMonth = searchParams.get("month") || getCurrentMonth()
   const monthData = getMonthData(currentMonth)
 
   return (
