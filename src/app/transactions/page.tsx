@@ -9,10 +9,12 @@ import { TransactionList } from "@/components/transaction-list"
 import { MonthNavigation } from "@/components/month-navigation"
 import { getCurrentMonth, getMonthData } from "@/lib/finance-data"
 import { useI18n } from "@/lib/i18n-context"
+import { useSearchParams } from "next/navigation"
 
 export default function TransactionsPage() {
   const { t } = useI18n()
-  const currentMonth = getCurrentMonth()
+  const searchParams = useSearchParams()
+  const currentMonth = searchParams.get("month") || getCurrentMonth()
   const monthData = getMonthData(currentMonth)
 
   return (
