@@ -9,15 +9,16 @@ import { TransactionList } from "@/components/transaction-list"
 import { MonthNavigation } from "@/components/month-navigation"
 import { getCurrentMonth, getMonthData } from "@/lib/finance-data"
 import { useI18n } from "@/lib/i18n-context"
+import { useSearchParams } from "next/navigation"
 
-export default function TransactionsPage() {
+function TransactionsContent() {
   const { t } = useI18n()
-  const currentMonth = getCurrentMonth()
+  const searchParams = useSearchParams()
+  const currentMonth = searchParams.get("month") || getCurrentMonth()
   const monthData = getMonthData(currentMonth)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -54,6 +55,16 @@ export default function TransactionsPage() {
           </CardContent>
         </Card>
       </div>
+    </div>
+  )
+}
+
+export default function TransactionsPage() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
+      <Suspense fallback={<div className="p-4">Loading...</div>}>
+        <TransactionsContent />
+      </Suspense>
     </div>
   )
 }
