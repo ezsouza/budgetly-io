@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -36,6 +36,31 @@ export default function AddTransactionForm() {
     endDate: "",
     noEndDate: true,
   })
+
+  useEffect(() => {
+    if (formData.startDate && formData.endDate && !formData.noEndDate) {
+      const start = new Date(formData.startDate)
+      const end = new Date(formData.endDate)
+      const months =
+        (end.getFullYear() - start.getFullYear()) * 12 +
+        (end.getMonth() - start.getMonth()) +
+        1
+      if (months > 0) {
+        setFormData((prev) => {
+          if (
+            prev.recurringMonths === months &&
+            prev.isRecurring
+          )
+            return prev
+          return {
+            ...prev,
+            isRecurring: true,
+            recurringMonths: months,
+          }
+        })
+      }
+    }
+  }, [formData.startDate, formData.endDate, formData.noEndDate])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
