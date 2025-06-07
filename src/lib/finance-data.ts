@@ -63,12 +63,44 @@ export function getCurrentMonth(): string {
   return `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, "0")}`
 }
 
+function occursInMonth(transaction: Transaction, year: number, month: number): boolean {
+  const startDate = transaction.startDate ?? transaction.date
+  const startYear = startDate.getFullYear()
+  const startMonth = startDate.getMonth() + 1
+  const monthsDiff = (year - startYear) * 12 + (month - startMonth)
+
+  if (monthsDiff < 0) return false
+  if (!transaction.isRecurring && monthsDiff !== 0) return false
+
+  if (transaction.isRecurring) {
+    if (transaction.recurringMonths && monthsDiff >= transaction.recurringMonths) return false
+
+    switch (transaction.recurrencePattern) {
+      case "semi-annually":
+        return monthsDiff % 6 === 0
+      case "annually":
+        return monthsDiff % 12 === 0
+      case "custom":
+        return transaction.customMonths?.includes(month) ?? false
+      default:
+        return true
+    }
+  }
+
+  return monthsDiff === 0
+}
+
 export function getMonthData(month: string): MonthData {
   const [year, monthNum] = month.split("-").map(Number)
 
-  const monthTransactions = transactions.filter((transaction) => {
-    const transactionDate = new Date(transaction.date)
-    return transactionDate.getFullYear() === year && transactionDate.getMonth() + 1 === monthNum
+  const monthTransactions: Transaction[] = []
+
+  transactions.forEach((transaction) => {
+    if (occursInMonth(transaction, year, monthNum)) {
+      const dateTemplate = transaction.startDate ?? transaction.date
+      const date = new Date(year, monthNum - 1, dateTemplate.getDate())
+      monthTransactions.push({ ...transaction, date })
+    }
   })
 
   const totalIncome = monthTransactions.filter((t) => t.type === "income").reduce((sum, t) => sum + t.amount, 0)
