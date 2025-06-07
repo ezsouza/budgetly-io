@@ -1,12 +1,14 @@
 "use client"
 
 import type { MonthData } from "@/lib/types"
+import { useI18n } from "@/lib/i18n-context"
 
 interface ExpenseChartProps {
   data: MonthData
 }
 
 export function ExpenseChart({ data }: ExpenseChartProps) {
+  const { t, lang } = useI18n()
   const categoryTotals = data.transactions
     .filter((t) => t.type !== "income")
     .reduce(
@@ -21,7 +23,8 @@ export function ExpenseChart({ data }: ExpenseChartProps) {
   const totalExpenses = Object.values(categoryTotals).reduce((sum, amount) => sum + amount, 0)
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
+    const locale = lang === "pt" ? "pt-BR" : lang === "es" ? "es-ES" : "en-US"
+    return new Intl.NumberFormat(locale, {
       style: "currency",
       currency: "USD",
     }).format(amount)
@@ -39,7 +42,7 @@ export function ExpenseChart({ data }: ExpenseChartProps) {
   ]
 
   if (totalExpenses === 0) {
-    return <div className="text-center py-8 text-slate-500">No expenses recorded yet.</div>
+    return <div className="text-center py-8 text-slate-500">{t("expenseChart.noExpenses")}</div>
   }
 
   return (

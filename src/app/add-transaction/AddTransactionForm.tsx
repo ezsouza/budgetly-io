@@ -14,11 +14,13 @@ import { ArrowLeft, Save } from "lucide-react"
 import Link from "next/link"
 import { addTransaction } from "@/lib/finance-data"
 import type { TransactionType } from "@/lib/types"
+import { useI18n } from "@/lib/i18n-context"
 
 export default function AddTransactionForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const defaultType = (searchParams.get("type") as TransactionType) || "variable"
+  const { t } = useI18n()
 
   const [formData, setFormData] = useState({
     type: defaultType,
@@ -48,7 +50,7 @@ export default function AddTransactionForm() {
     router.push("/")
   }
 
-  const categories = {
+  const categoryKeys = {
     income: ["Salary", "Freelance", "Investment", "Other"],
     fixed: ["Rent", "Insurance", "Loan Payment", "Subscription", "Utilities"],
     variable: ["Food", "Transportation", "Entertainment", "Shopping", "Healthcare", "Other"],
@@ -65,21 +67,21 @@ export default function AddTransactionForm() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Add Transaction</h1>
-            <p className="text-slate-600">Record a new financial transaction</p>
+            <h1 className="text-2xl font-bold text-slate-900">{t("addTransaction.headerTitle")}</h1>
+            <p className="text-slate-600">{t("addTransaction.headerSubtitle")}</p>
           </div>
         </div>
 
         {/* Form */}
         <Card>
           <CardHeader>
-            <CardTitle>Transaction Details</CardTitle>
+            <CardTitle>{t("addTransaction.details")}</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Transaction Type */}
               <div className="space-y-2">
-                <Label htmlFor="type">Transaction Type</Label>
+                <Label htmlFor="type">{t("addTransaction.type")}</Label>
                 <Select
                   value={formData.type}
                   onValueChange={(value: TransactionType) => setFormData({ ...formData, type: value, category: "" })}
@@ -88,16 +90,16 @@ export default function AddTransactionForm() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="income">Income</SelectItem>
-                    <SelectItem value="fixed">Fixed Expense</SelectItem>
-                    <SelectItem value="variable">Variable Expense</SelectItem>
+                    <SelectItem value="income">{t("addTransaction.income")}</SelectItem>
+                    <SelectItem value="fixed">{t("addTransaction.fixedExpense")}</SelectItem>
+                    <SelectItem value="variable">{t("addTransaction.variableExpense")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Amount */}
               <div className="space-y-2">
-                <Label htmlFor="amount">Amount ($)</Label>
+                <Label htmlFor="amount">{t("addTransaction.amount")}</Label>
                 <Input
                   id="amount"
                   type="number"
@@ -111,30 +113,30 @@ export default function AddTransactionForm() {
 
               {/* Description */}
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">{t("addTransaction.description")}</Label>
                 <Textarea
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Enter transaction description"
+                  placeholder={t("addTransaction.enterDescription")}
                   required
                 />
               </div>
 
               {/* Category */}
               <div className="space-y-2">
-                <Label htmlFor="category">Category</Label>
+                <Label htmlFor="category">{t("addTransaction.category")}</Label>
                 <Select
                   value={formData.category}
                   onValueChange={(value) => setFormData({ ...formData, category: value })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a category" />
+                    <SelectValue placeholder={t("addTransaction.selectCategory")} />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories[formData.type].map((category) => (
+                    {categoryKeys[formData.type].map((category) => (
                       <SelectItem key={category} value={category}>
-                        {category}
+                        {t(`category.${category}`)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -143,7 +145,7 @@ export default function AddTransactionForm() {
 
               {/* Date */}
               <div className="space-y-2">
-                <Label htmlFor="date">Date</Label>
+                <Label htmlFor="date">{t("addTransaction.date")}</Label>
                 <Input
                   id="date"
                   type="date"
@@ -157,7 +159,7 @@ export default function AddTransactionForm() {
               {formData.type === "fixed" && (
                 <div className="space-y-4 p-4 bg-slate-50 rounded-lg">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="recurring">Recurring Transaction</Label>
+                    <Label htmlFor="recurring">{t("addTransaction.recurringTransaction")}</Label>
                     <Switch
                       id="recurring"
                       checked={formData.isRecurring}
@@ -167,7 +169,7 @@ export default function AddTransactionForm() {
 
                   {formData.isRecurring && (
                     <div className="space-y-2">
-                      <Label htmlFor="recurringMonths">Number of Months</Label>
+                      <Label htmlFor="recurringMonths">{t("addTransaction.numberOfMonths")}</Label>
                       <Input
                         id="recurringMonths"
                         type="number"
@@ -184,7 +186,7 @@ export default function AddTransactionForm() {
               {/* Submit Button */}
               <Button type="submit" className="w-full flex items-center gap-2">
                 <Save className="w-4 h-4" />
-                Save Transaction
+                {t("addTransaction.save")}
               </Button>
             </form>
           </CardContent>
