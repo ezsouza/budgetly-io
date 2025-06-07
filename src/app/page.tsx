@@ -3,7 +3,7 @@
 import { Suspense } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Plus, TrendingUp, TrendingDown, DollarSign, Calendar } from "lucide-react"
+import { Plus, TrendingUp, TrendingDown, DollarSign, Calendar, Pencil } from "lucide-react"
 import Link from "next/link"
 import { MonthNavigation } from "@/components/month-navigation"
 import { FinancialSummary } from "@/components/financial-summary"
@@ -27,12 +27,20 @@ function DashboardContent() {
             <h1 className="text-3xl font-bold text-slate-900">{t("dashboard.title")}</h1>
             <p className="text-slate-600">{t("dashboard.subtitle")}</p>
           </div>
-          <Link href="/add-transaction">
-            <Button className="flex items-center gap-2">
-              <Plus className="w-4 h-4" />
-              {t("dashboard.addTransaction")}
-            </Button>
-          </Link>
+          <div className="flex gap-2">
+            <Link href="/transactions">
+              <Button variant="outline" className="flex items-center gap-2">
+                <Pencil className="w-4 h-4" />
+                {t("dashboard.editTransactions")}
+              </Button>
+            </Link>
+            <Link href="/add-transaction">
+              <Button className="flex items-center gap-2">
+                <Plus className="w-4 h-4" />
+                {t("dashboard.addTransaction")}
+              </Button>
+            </Link>
+          </div>
         </div>
 
           {/* Month Navigation */}
@@ -78,7 +86,7 @@ function DashboardContent() {
             <CardTitle>{t("dashboard.quickActions")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
               <Link href="/add-transaction?type=income">
                 <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
                   <TrendingUp className="w-6 h-6 text-green-600" />
@@ -95,6 +103,12 @@ function DashboardContent() {
                 <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
                   <TrendingDown className="w-6 h-6 text-red-600" />
                   {t("dashboard.addVariableExpense")}
+                </Button>
+              </Link>
+              <Link href="/transactions">
+                <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
+                  <Pencil className="w-6 h-6" />
+                  {t("dashboard.editTransactions")}
                 </Button>
               </Link>
             </div>
