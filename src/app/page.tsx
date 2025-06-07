@@ -113,13 +113,3 @@ export default function Dashboard() {
     </div>
   )
 }
-
-export default function Dashboard() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
-      <Suspense fallback={<div className="p-4">Loading...</div>}>
-        <DashboardContent />
-      </Suspense>
-    </div>
-  )
-}
