@@ -100,7 +100,7 @@ function DashboardContent() {
             </div>
           </CardContent>
         </Card>
-    </div>
+      </div>
   )
 }
 
