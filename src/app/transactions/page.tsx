@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Plus } from "lucide-react"
 import Link from "next/link"
+import { Suspense } from "react"
 import { TransactionList } from "@/components/transaction-list"
 import { MonthNavigation } from "@/components/month-navigation"
 import { getCurrentMonth, getMonthData } from "@/lib/finance-data"
@@ -35,7 +36,9 @@ export default function TransactionsPage() {
         </div>
 
         {/* Month Navigation */}
-        <MonthNavigation currentMonth={currentMonth} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <MonthNavigation currentMonth={currentMonth} />
+        </Suspense>
 
         {/* Transactions */}
         <Card>
