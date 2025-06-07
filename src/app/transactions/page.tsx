@@ -54,7 +54,7 @@ function TransactionsContent() {
             <TransactionList transactions={monthData.transactions} />
           </CardContent>
         </Card>
-    </div>
+      </div>
   )
 }
 
