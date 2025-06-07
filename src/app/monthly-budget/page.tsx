@@ -13,7 +13,9 @@ export default function MonthlyBudgetPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
       <div className="max-w-7xl mx-auto space-y-6">
         <h1 className="text-3xl font-bold text-slate-900">Monthly Budget</h1>
-        <MonthNavigation currentMonth={currentMonth} />
+          <Suspense fallback={<div>Loading...</div>}>
+            <MonthNavigation currentMonth={currentMonth} />
+          </Suspense>
         <FinancialSummary data={monthData} />
         <Card>
           <CardHeader>
