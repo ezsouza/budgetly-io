@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter, useParams } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,36 +12,37 @@ import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { ArrowLeft, Save } from "lucide-react"
 import Link from "next/link"
-import { addTransaction } from "@/lib/finance-data"
+import { getTransactionById, updateTransaction } from "@/lib/finance-data"
 import type { TransactionType } from "@/lib/types"
 import { useI18n } from "@/lib/i18n-context"
 
-export default function AddTransactionForm() {
+export default function EditTransactionForm() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const defaultType = (searchParams.get("type") as TransactionType) || "variable"
+  const params = useParams()
   const { t } = useI18n()
+  const transaction = getTransactionById(params.id as string)
 
   const [formData, setFormData] = useState({
-    type: defaultType,
-    amount: "",
-    description: "",
-    category: "",
-    date: new Date().toISOString().split("T")[0],
-    isRecurring: false,
-    recurringMonths: 1,
-    recurrencePattern: "monthly",
-    customMonths: [] as number[],
-    startDate: new Date().toISOString().split("T")[0],
-    endDate: "",
+    type: transaction?.type || "variable",
+    amount: transaction?.amount.toString() || "",
+    description: transaction?.description || "",
+    category: transaction?.category || "",
+    date: transaction ? new Date(transaction.date).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
+    isRecurring: transaction?.isRecurring || false,
+    recurringMonths: transaction?.recurringMonths || 1,
+    recurrencePattern: transaction?.recurrencePattern || "monthly",
+    customMonths: transaction?.customMonths || ([] as number[]),
+    startDate: transaction?.startDate ? transaction.startDate.toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
+    endDate: transaction?.endDate ? transaction.endDate.toISOString().split("T")[0] : "",
   })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    const transaction = {
-      id: Date.now().toString(),
-      type: formData.type,
+    if (!transaction) return
+
+    const updated = {
+      type: formData.type as TransactionType,
       amount: Number.parseFloat(formData.amount),
       description: formData.description,
       category: formData.category,
@@ -54,7 +55,7 @@ export default function AddTransactionForm() {
       endDate: formData.endDate ? new Date(formData.endDate) : undefined,
     }
 
-    addTransaction(transaction)
+    updateTransaction(transaction.id, updated)
     router.push("/")
   }
 

@@ -3,7 +3,8 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import type { Transaction } from "@/lib/types"
-import { TrendingUp, TrendingDown, DollarSign, Trash2 } from "lucide-react"
+import { TrendingUp, TrendingDown, DollarSign, Trash2, Pencil } from "lucide-react"
+import Link from "next/link"
 import { useI18n } from "@/lib/i18n-context"
 
 interface TransactionListProps {
@@ -94,6 +95,11 @@ export function TransactionList({ transactions }: TransactionListProps) {
                 {formatCurrency(transaction.amount)}
               </p>
             </div>
+            <Link href={`/edit-transaction/${transaction.id}`}>
+              <Button variant="ghost" size="icon" className="text-blue-500 hover:text-blue-700">
+                <Pencil className="w-4 h-4" />
+              </Button>
+            </Link>
             <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-700">
               <Trash2 className="w-4 h-4" />
             </Button>

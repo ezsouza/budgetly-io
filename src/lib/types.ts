@@ -12,6 +12,7 @@ export interface Transaction {
   recurrencePattern?: "monthly" | "semi-annually" | "annually" | "custom"
   customMonths?: number[]
   startDate?: Date
+  endDate?: Date
 }
 
 export interface MonthData {
