@@ -2,6 +2,7 @@
 
 import type { MonthData } from "@/lib/types"
 import { useI18n } from "@/lib/i18n-context"
+import { useCurrency } from "@/lib/currency-context"
 
 interface ExpenseChartProps {
   data: MonthData
@@ -9,12 +10,13 @@ interface ExpenseChartProps {
 
 export function ExpenseChart({ data }: ExpenseChartProps) {
   const { t, lang } = useI18n()
+  const { currency, convert } = useCurrency()
   const categoryTotals = data.transactions
     .filter((t) => t.type !== "income")
     .reduce(
       (acc, transaction) => {
-        acc[transaction.category] =
-          (acc[transaction.category] || 0) + transaction.amount
+        const value = convert(transaction.amount, transaction.currency as any, currency)
+        acc[transaction.category] = (acc[transaction.category] || 0) + value
         return acc
       },
       {} as Record<string, number>,
@@ -24,10 +26,7 @@ export function ExpenseChart({ data }: ExpenseChartProps) {
 
   const formatCurrency = (amount: number) => {
     const locale = lang === "pt" ? "pt-BR" : lang === "es" ? "es-ES" : "en-US"
-    return new Intl.NumberFormat(locale, {
-      style: "currency",
-      currency: "USD",
-    }).format(amount)
+    return new Intl.NumberFormat(locale, { style: "currency", currency }).format(amount)
   }
 
   const colors = [

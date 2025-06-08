@@ -13,17 +13,20 @@ import { Switch } from "@/components/ui/switch"
 import { ArrowLeft, Save } from "lucide-react"
 import Link from "next/link"
 import { getTransactionById, updateTransaction } from "@/lib/finance-data"
-import type { TransactionType } from "@/lib/types"
+import type { TransactionType, Currency } from "@/lib/types"
 import { useI18n } from "@/lib/i18n-context"
+import { useCurrency } from "@/lib/currency-context"
 
 export default function EditTransactionForm() {
   const router = useRouter()
   const params = useParams()
   const { t } = useI18n()
+  const { currency } = useCurrency()
 
   const [formData, setFormData] = useState({
     type: "variable" as TransactionType,
     amount: "",
+    currency,
     description: "",
     category: "",
     date: new Date().toISOString().split("T")[0],
@@ -43,6 +46,7 @@ export default function EditTransactionForm() {
       setFormData({
         type: loaded.type,
         amount: loaded.amount.toString(),
+        currency: loaded.currency,
         description: loaded.description,
         category: loaded.category,
         date: new Date(loaded.date).toISOString().split("T")[0],
@@ -84,6 +88,10 @@ export default function EditTransactionForm() {
     }
   }, [formData.startDate, formData.endDate, formData.noEndDate])
 
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, currency }))
+  }, [currency])
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -92,6 +100,7 @@ export default function EditTransactionForm() {
     const updated = {
       type: formData.type as TransactionType,
       amount: Number.parseFloat(formData.amount),
+      currency: formData.currency as Currency,
       description: formData.description,
       category: formData.category,
       date: new Date(formData.date),
@@ -170,6 +179,23 @@ export default function EditTransactionForm() {
                   placeholder="0.00"
                   required
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="currency">{t("addTransaction.currency")}</Label>
+                <Select
+                  value={formData.currency}
+                  onValueChange={(value) => setFormData({ ...formData, currency: value as Currency })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="USD">USD</SelectItem>
+                    <SelectItem value="BRL">BRL</SelectItem>
+                    <SelectItem value="EUR">EUR</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Description */}

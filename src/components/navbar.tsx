@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/auth-context"
 import { useI18n } from "@/lib/i18n-context"
 import { LanguageSelector } from "@/components/language-selector"
+import { CurrencySelector } from "@/components/currency-selector"
 
 export function Navbar() {
   const { user, logout } = useAuth()
@@ -31,6 +32,7 @@ export function Navbar() {
         </Link>
         <nav className="hidden sm:flex items-center gap-2">
           <LanguageSelector />
+          <CurrencySelector />
           {user ? (
             <>
               <span className="text-sm text-slate-600">{t("navbar.hello")} {user}</span>
@@ -63,6 +65,7 @@ export function Navbar() {
             </button>
             <div className="space-y-4">
               <LanguageSelector />
+              <CurrencySelector />
               {user ? (
                 <>
                   <span className="text-sm text-slate-600">{t("navbar.hello")} {user}</span>

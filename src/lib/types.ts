@@ -1,8 +1,11 @@
 export type TransactionType = "income" | "fixed" | "variable"
 
+export type Currency = "USD" | "BRL" | "EUR"
+
 export interface Transaction {
   id: string
   type: TransactionType
+  currency: Currency
   amount: number
   description: string
   category: string

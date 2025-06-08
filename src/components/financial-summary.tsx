@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { TrendingUp, TrendingDown, DollarSign, PiggyBank } from "lucide-react"
 import type { MonthData } from "@/lib/types"
 import { useI18n } from "@/lib/i18n-context"
+import { useCurrency } from "@/lib/currency-context"
 
 interface FinancialSummaryProps {
   data: MonthData
@@ -11,23 +12,28 @@ interface FinancialSummaryProps {
 
 export function FinancialSummary({ data }: FinancialSummaryProps) {
   const { t, lang } = useI18n()
-  const totalIncome = data.transactions.filter((t) => t.type === "income").reduce((sum, t) => sum + t.amount, 0)
+  const { currency, convert } = useCurrency()
 
-  const totalFixedExpenses = data.transactions.filter((t) => t.type === "fixed").reduce((sum, t) => sum + t.amount, 0)
+  const totalIncome = data.transactions
+    .filter((t) => t.type === "income")
+    .reduce((sum, t) => sum + convert(t.amount, t.currency as any, currency), 0)
+
+  const totalFixedExpenses = data.transactions
+    .filter((t) => t.type === "fixed")
+    .reduce((sum, t) => sum + convert(t.amount, t.currency as any, currency), 0)
 
   const totalVariableExpenses = data.transactions
     .filter((t) => t.type === "variable")
-    .reduce((sum, t) => sum + t.amount, 0)
+    .reduce((sum, t) => sum + convert(t.amount, t.currency as any, currency), 0)
 
   const totalExpenses = totalFixedExpenses + totalVariableExpenses
   const netIncome = totalIncome - totalExpenses
 
   const formatCurrency = (amount: number) => {
-    const locale =
-      lang === "pt" ? "pt-BR" : lang === "es" ? "es-ES" : "en-US"
+    const locale = lang === "pt" ? "pt-BR" : lang === "es" ? "es-ES" : "en-US"
     return new Intl.NumberFormat(locale, {
       style: "currency",
-      currency: "USD",
+      currency,
     }).format(amount)
   }
 
