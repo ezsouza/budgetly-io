@@ -2,6 +2,7 @@
 
 import { useI18n } from "@/lib/i18n-context"
 import { getMonthData } from "@/lib/finance-data"
+import Link from "next/link"
 
 interface YearSummaryProps {
   year: number
@@ -20,9 +21,10 @@ export function YearSummary({ year }: YearSummaryProps) {
   return (
     <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
       {months.map((m) => (
-        <div
+        <Link
+          href={`/transactions?month=${year}-${m.month.toString().padStart(2, "0")}`}
           key={m.month}
-          className="p-3 bg-slate-50 rounded shadow-sm text-center"
+          className="p-3 bg-slate-50 rounded shadow-sm text-center block"
         >
           <div className="font-medium">
             {new Date(year, m.month - 1).toLocaleDateString(locale, {
@@ -36,7 +38,7 @@ export function YearSummary({ year }: YearSummaryProps) {
           >
             {t("overviewCalendar.netIncome")}: {m.net.toFixed(0)}
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   )
