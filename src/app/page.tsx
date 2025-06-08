@@ -111,12 +111,6 @@ function DashboardContent() {
                   {t("dashboard.editTransactions")}
                 </Button>
               </Link>
-              <Link href="/annual-overview">
-                <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
-                  <Calendar className="w-6 h-6" />
-                  {t("dashboard.annualOverview")}
-                </Button>
-              </Link>
             </div>
           </CardContent>
         </Card>
