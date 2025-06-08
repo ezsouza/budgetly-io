@@ -15,16 +15,19 @@ import Link from "next/link"
 import { addTransaction } from "@/lib/finance-data"
 import type { TransactionType } from "@/lib/types"
 import { useI18n } from "@/lib/i18n-context"
+import { useCurrency, Currency } from "@/lib/currency-context"
 
 export default function AddTransactionForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const defaultType = (searchParams.get("type") as TransactionType) || "variable"
   const { t } = useI18n()
+  const { currency } = useCurrency()
 
   const [formData, setFormData] = useState({
     type: defaultType,
     amount: "",
+    currency,
     description: "",
     category: "",
     date: new Date().toISOString().split("T")[0],
@@ -62,6 +65,10 @@ export default function AddTransactionForm() {
     }
   }, [formData.startDate, formData.endDate, formData.noEndDate])
 
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, currency }))
+  }, [currency])
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -69,6 +76,7 @@ export default function AddTransactionForm() {
       id: Date.now().toString(),
       type: formData.type,
       amount: Number.parseFloat(formData.amount),
+      currency: formData.currency as Currency,
       description: formData.description,
       category: formData.category,
       date: new Date(formData.date),
@@ -147,6 +155,23 @@ export default function AddTransactionForm() {
                   placeholder="0.00"
                   required
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="currency">{t("addTransaction.currency")}</Label>
+                <Select
+                  value={formData.currency}
+                  onValueChange={(value) => setFormData({ ...formData, currency: value as Currency })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="USD">USD</SelectItem>
+                    <SelectItem value="BRL">BRL</SelectItem>
+                    <SelectItem value="EUR">EUR</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Description */}

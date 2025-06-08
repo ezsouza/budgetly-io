@@ -1,10 +1,20 @@
-import type { Transaction, MonthData } from "./types"
+import type { Transaction, MonthData, Currency } from "./types"
+
+const rates: Record<Currency, number> = { USD: 1, BRL: 5, EUR: 0.9 }
+const BASE_CURRENCY: Currency = "USD"
+
+function toBase(amount: number, currency: Currency) {
+  if (currency === BASE_CURRENCY) return amount
+  const usd = amount / rates[currency]
+  return usd * rates[BASE_CURRENCY]
+}
 
 // Mock data storage - in a real app, this would be a database
 let transactions: Transaction[] = [
   {
     id: "1",
     type: "income",
+    currency: "USD",
     amount: 5000,
     description: "Monthly Salary",
     category: "Salary",
@@ -15,6 +25,7 @@ let transactions: Transaction[] = [
   {
     id: "2",
     type: "fixed",
+    currency: "USD",
     amount: 1200,
     description: "Rent Payment",
     category: "Rent",
@@ -25,6 +36,7 @@ let transactions: Transaction[] = [
   {
     id: "3",
     type: "fixed",
+    currency: "USD",
     amount: 150,
     description: "Car Insurance",
     category: "Insurance",
@@ -35,6 +47,7 @@ let transactions: Transaction[] = [
   {
     id: "4",
     type: "variable",
+    currency: "USD",
     amount: 85,
     description: "Grocery Shopping",
     category: "Food",
@@ -43,6 +56,7 @@ let transactions: Transaction[] = [
   {
     id: "5",
     type: "variable",
+    currency: "USD",
     amount: 45,
     description: "Gas Station",
     category: "Transportation",
@@ -51,6 +65,7 @@ let transactions: Transaction[] = [
   {
     id: "6",
     type: "variable",
+    currency: "USD",
     amount: 120,
     description: "Dinner Out",
     category: "Entertainment",
@@ -110,9 +125,13 @@ export function getMonthData(month: string): MonthData {
     }
   })
 
-  const totalIncome = monthTransactions.filter((t) => t.type === "income").reduce((sum, t) => sum + t.amount, 0)
+  const totalIncome = monthTransactions
+    .filter((t) => t.type === "income")
+    .reduce((sum, t) => sum + toBase(t.amount, t.currency), 0)
 
-  const totalExpenses = monthTransactions.filter((t) => t.type !== "income").reduce((sum, t) => sum + t.amount, 0)
+  const totalExpenses = monthTransactions
+    .filter((t) => t.type !== "income")
+    .reduce((sum, t) => sum + toBase(t.amount, t.currency), 0)
 
   return {
     month,

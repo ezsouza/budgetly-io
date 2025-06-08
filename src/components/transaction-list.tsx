@@ -6,6 +6,7 @@ import type { Transaction } from "@/lib/types"
 import { TrendingUp, TrendingDown, DollarSign, Trash2, Pencil } from "lucide-react"
 import Link from "next/link"
 import { useI18n } from "@/lib/i18n-context"
+import { useCurrency } from "@/lib/currency-context"
 
 interface TransactionListProps {
   transactions: Transaction[]
@@ -13,6 +14,7 @@ interface TransactionListProps {
 
 export function TransactionList({ transactions }: TransactionListProps) {
   const { t, lang } = useI18n()
+  const { currency, convert } = useCurrency()
   const getTypeIcon = (type: string) => {
     switch (type) {
       case "income":
@@ -39,12 +41,13 @@ export function TransactionList({ transactions }: TransactionListProps) {
     }
   }
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount: number, from: string) => {
     const locale = lang === "pt" ? "pt-BR" : lang === "es" ? "es-ES" : "en-US"
+    const value = convert(amount, from as any, currency)
     return new Intl.NumberFormat(locale, {
       style: "currency",
-      currency: "USD",
-    }).format(amount)
+      currency,
+    }).format(value)
   }
 
   const sortedTransactions = transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -92,7 +95,12 @@ export function TransactionList({ transactions }: TransactionListProps) {
                 className={`text-lg font-semibold ${transaction.type === "income" ? "text-green-600" : "text-red-600"}`}
               >
                 {transaction.type === "income" ? "+" : "-"}
-                {formatCurrency(transaction.amount)}
+                {formatCurrency(transaction.amount, transaction.currency)}
+                {transaction.currency !== currency && (
+                  <Badge variant="outline" className="ml-1 text-xs">
+                    {transaction.currency}
+                  </Badge>
+                )}
               </p>
             </div>
             <Link href={`/edit-transaction/${transaction.id}`}>

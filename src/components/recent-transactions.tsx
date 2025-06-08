@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import type { Transaction } from "@/lib/types"
 import { TrendingUp, TrendingDown, DollarSign } from "lucide-react"
 import { useI18n } from "@/lib/i18n-context"
+import { useCurrency } from "@/lib/currency-context"
 
 interface RecentTransactionsProps {
   transactions: Transaction[]
@@ -11,6 +12,7 @@ interface RecentTransactionsProps {
 
 export function RecentTransactions({ transactions }: RecentTransactionsProps) {
   const { t, lang } = useI18n()
+  const { currency, convert } = useCurrency()
   const recentTransactions = transactions
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5)
@@ -41,12 +43,10 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
     }
   }
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount: number, from: string) => {
     const locale = lang === "pt" ? "pt-BR" : lang === "es" ? "es-ES" : "en-US"
-    return new Intl.NumberFormat(locale, {
-      style: "currency",
-      currency: "USD",
-    }).format(amount)
+    const value = convert(amount, from as any, currency)
+    return new Intl.NumberFormat(locale, { style: "currency", currency }).format(value)
   }
 
   if (recentTransactions.length === 0) {
@@ -79,7 +79,12 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
           <div className="mt-2 sm:mt-0 text-right">
             <p className={`font-semibold ${transaction.type === "income" ? "text-green-600" : "text-red-600"}`}>
               {transaction.type === "income" ? "+" : "-"}
-              {formatCurrency(transaction.amount)}
+              {formatCurrency(transaction.amount, transaction.currency)}
+              {transaction.currency !== currency && (
+                <Badge variant="outline" className="ml-1 text-xs">
+                  {transaction.currency}
+                </Badge>
+              )}
             </p>
             <p className="text-sm text-slate-500">{new Date(transaction.date).toLocaleDateString()}</p>
           </div>
