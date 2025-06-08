@@ -1,19 +1,30 @@
 "use client"
 
-import { Suspense, useState } from "react"
+import { Suspense } from "react"
 import { MonthNavigation } from "@/components/month-navigation"
 import { CalendarMap } from "@/components/calendar-map"
 import { YearSummary } from "@/components/year-summary"
+import { TransactionList } from "@/components/transaction-list"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { getCurrentMonth, getMonthData } from "@/lib/finance-data"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
 import { useI18n } from "@/lib/i18n-context"
 
 function OverviewContent() {
   const { t } = useI18n()
   const searchParams = useSearchParams()
+  const router = useRouter()
   const currentMonth = searchParams.get("month") || getCurrentMonth()
+  const currentView = searchParams.get("view") || "daily"
   const monthData = getMonthData(currentMonth)
   const [year] = currentMonth.split("-")
+
+  const setView = (view: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set("view", view)
+    router.push(`?${params.toString()}`)
+  }
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -23,13 +34,53 @@ function OverviewContent() {
       <Suspense fallback={<div>{t("common.loading")}</div>}>
         <MonthNavigation currentMonth={currentMonth} />
       </Suspense>
-      <CalendarMap data={monthData} />
-      <div>
-        <h2 className="text-xl font-semibold text-slate-900 mb-2">
-          {t("overviewCalendar.annualStats")}
-        </h2>
-        <YearSummary year={Number(year)} />
+      <div className="flex gap-2">
+        <Button
+          variant={currentView === "transactions" ? "default" : "outline"}
+          size="sm"
+          onClick={() => setView("transactions")}
+        >
+          {t("overviewCalendar.viewTransactions")}
+        </Button>
+        <Button
+          variant={currentView === "daily" ? "default" : "outline"}
+          size="sm"
+          onClick={() => setView("daily")}
+        >
+          {t("overviewCalendar.viewDaily")}
+        </Button>
+        <Button
+          variant={currentView === "annual" ? "default" : "outline"}
+          size="sm"
+          onClick={() => setView("annual")}
+        >
+          {t("overviewCalendar.viewAnnual")}
+        </Button>
       </div>
+
+      {currentView === "transactions" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              {t("transactionsPage.transactionsFor")} {currentMonth}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TransactionList transactions={monthData.transactions} />
+          </CardContent>
+        </Card>
+      )}
+
+      {currentView === "daily" && <CalendarMap data={monthData} />}
+
+      {currentView === "annual" && (
+        <div>
+          <h2 className="text-xl font-semibold text-slate-900 mb-2">
+            {t("overviewCalendar.annualStats")}
+          </h2>
+          <YearSummary year={Number(year)} />
+        </div>
+      )}
     </div>
   )
 }
