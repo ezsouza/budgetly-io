@@ -10,9 +10,9 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
-import { ArrowLeft, Save } from "lucide-react"
+import { ArrowLeft, Save, Trash2 } from "lucide-react"
 import Link from "next/link"
-import { getTransactionById, updateTransaction } from "@/lib/finance-data"
+import { getTransactionById, updateTransaction, deleteTransaction } from "@/lib/finance-data"
 import type { TransactionType, Currency } from "@/lib/types"
 import { useI18n } from "@/lib/i18n-context"
 import { useCurrency } from "@/lib/currency-context"
@@ -117,6 +117,12 @@ export default function EditTransactionForm() {
     }
 
     updateTransaction(params.id as string, updated)
+    router.push("/")
+  }
+
+  const handleDelete = () => {
+    if (!params.id) return
+    deleteTransaction(params.id as string)
     router.push("/")
   }
 
@@ -356,6 +362,15 @@ export default function EditTransactionForm() {
               <Button type="submit" className="w-full flex items-center gap-2">
                 <Save className="w-4 h-4" />
                 {t("editTransaction.save")}
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handleDelete}
+                className="w-full flex items-center gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                {t("editTransaction.delete")}
               </Button>
             </form>
           </CardContent>
