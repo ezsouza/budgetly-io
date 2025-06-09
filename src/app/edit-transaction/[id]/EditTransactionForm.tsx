@@ -31,7 +31,7 @@ export default function EditTransactionForm() {
     category: "",
     date: new Date().toISOString().split("T")[0],
     isRecurring: false,
-    recurringMonths: 1,
+    recurringMonths: undefined as number | undefined,
     recurrencePattern: "monthly",
     customMonths: [] as number[],
     startDate: new Date().toISOString().split("T")[0],
@@ -51,7 +51,7 @@ export default function EditTransactionForm() {
         category: loaded.category,
         date: new Date(loaded.date).toISOString().split("T")[0],
         isRecurring: loaded.isRecurring || false,
-        recurringMonths: loaded.recurringMonths || 1,
+        recurringMonths: loaded.recurringMonths,
         recurrencePattern: loaded.recurrencePattern || "monthly",
         customMonths: loaded.customMonths || [],
         startDate: loaded.startDate
@@ -64,29 +64,48 @@ export default function EditTransactionForm() {
   }, [params.id])
 
   useEffect(() => {
-    if (formData.startDate && formData.endDate && !formData.noEndDate) {
+    if (formData.noEndDate) {
+      setFormData((prev) => ({ ...prev, recurringMonths: undefined }))
+      return
+    }
+
+    if (formData.startDate && formData.endDate) {
       const start = new Date(formData.startDate)
       const end = new Date(formData.endDate)
       const months =
         (end.getFullYear() - start.getFullYear()) * 12 +
         (end.getMonth() - start.getMonth()) +
         1
+
       if (months > 0) {
+        let interval = 1
+        switch (formData.recurrencePattern) {
+          case "semi-annually":
+            interval = 6
+            break
+          case "annually":
+            interval = 12
+            break
+        }
+
+        const adjusted = Math.ceil(months / interval) * interval
+
         setFormData((prev) => {
-          if (
-            prev.recurringMonths === months &&
-            prev.isRecurring
-          )
-            return prev
+          if (prev.recurringMonths === adjusted && prev.isRecurring) return prev
           return {
             ...prev,
             isRecurring: true,
-            recurringMonths: months,
+            recurringMonths: adjusted,
           }
         })
       }
     }
-  }, [formData.startDate, formData.endDate, formData.noEndDate])
+  }, [
+    formData.startDate,
+    formData.endDate,
+    formData.noEndDate,
+    formData.recurrencePattern,
+  ])
 
   useEffect(() => {
     setFormData((prev) => ({ ...prev, currency }))
@@ -342,17 +361,24 @@ export default function EditTransactionForm() {
                         </div>
                       )}
 
-                      <div className="space-y-2">
-                        <Label htmlFor="recurringMonths">{t("addTransaction.numberOfMonths")}</Label>
-                        <Input
-                          id="recurringMonths"
-                          type="number"
-                          min="1"
-                          value={formData.recurringMonths}
-                          onChange={(e) => setFormData({ ...formData, recurringMonths: Number.parseInt(e.target.value) })}
-                          placeholder="12"
-                        />
-                      </div>
+                      {!formData.noEndDate && (
+                        <div className="space-y-2">
+                          <Label htmlFor="recurringMonths">{t("addTransaction.numberOfMonths")}</Label>
+                          <Input
+                            id="recurringMonths"
+                            type="number"
+                            min="1"
+                            value={formData.recurringMonths}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                recurringMonths: Number.parseInt(e.target.value),
+                              })
+                            }
+                            placeholder="12"
+                          />
+                        </div>
+                      )}
                     </>
                   )}
                 </div>
