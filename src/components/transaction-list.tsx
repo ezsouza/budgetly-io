@@ -7,6 +7,8 @@ import { TrendingUp, TrendingDown, DollarSign, Trash2, Pencil } from "lucide-rea
 import Link from "next/link"
 import { useI18n } from "@/lib/i18n-context"
 import { useCurrency } from "@/lib/currency-context"
+import { useState } from "react"
+import { deleteTransaction } from "@/lib/finance-data"
 
 interface TransactionListProps {
   transactions: Transaction[]
@@ -15,6 +17,7 @@ interface TransactionListProps {
 export function TransactionList({ transactions }: TransactionListProps) {
   const { t, lang } = useI18n()
   const { currency, convert } = useCurrency()
+  const [txs, setTxs] = useState(transactions)
   const getTypeIcon = (type: string) => {
     switch (type) {
       case "income":
@@ -50,9 +53,16 @@ export function TransactionList({ transactions }: TransactionListProps) {
     }).format(value)
   }
 
-  const sortedTransactions = transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  const handleDelete = (id: string) => {
+    deleteTransaction(id)
+    setTxs((prev) => prev.filter((t) => t.id !== id))
+  }
 
-  if (transactions.length === 0) {
+  const sortedTransactions = txs
+    .slice()
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
+  if (txs.length === 0) {
     return (
       <div className="text-center py-12 text-slate-500">
         <p className="text-lg">{t("transactionList.noTransactions1")}</p>
@@ -108,7 +118,12 @@ export function TransactionList({ transactions }: TransactionListProps) {
                 <Pencil className="w-4 h-4" />
               </Button>
             </Link>
-            <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-700">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-red-500 hover:text-red-700"
+              onClick={() => handleDelete(transaction.id)}
+            >
               <Trash2 className="w-4 h-4" />
             </Button>
           </div>
