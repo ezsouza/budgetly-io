@@ -6,6 +6,7 @@ import { AuthProvider } from "@/lib/auth-context"
 import { I18nProvider } from "@/lib/i18n-context"
 import { CurrencyProvider } from "@/lib/currency-context"
 import { Navbar } from "@/components/navbar"
+import { DarkModeProvider } from "@/lib/dark-mode-context"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -21,16 +22,18 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <I18nProvider>
-          <CurrencyProvider>
-            <AuthProvider>
-              <Navbar />
-              {children}
-            </AuthProvider>
-          </CurrencyProvider>
-        </I18nProvider>
+        <DarkModeProvider>
+          <I18nProvider>
+            <CurrencyProvider>
+              <AuthProvider>
+                <Navbar />
+                {children}
+              </AuthProvider>
+            </CurrencyProvider>
+          </I18nProvider>
+        </DarkModeProvider>
       </body>
     </html>
   )
