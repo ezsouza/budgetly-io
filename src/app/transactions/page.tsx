@@ -28,8 +28,8 @@ function TransactionsContent() {
               </Button>
             </Link>
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">{t("transactionsPage.allTransactions")}</h1>
-              <p className="text-slate-600">{t("transactionsPage.viewManage")}</p>
+              <h1 className="text-2xl font-bold text-foreground">{t("transactionsPage.allTransactions")}</h1>
+              <p className="text-muted-foreground">{t("transactionsPage.viewManage")}</p>
             </div>
           </div>
           <Link href="/add-transaction">
@@ -60,7 +60,7 @@ function TransactionsContent() {
 
 export default function TransactionsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 p-4">
       <Suspense fallback={<div className="p-4">Loading...</div>}>
         <TransactionsContent />
       </Suspense>

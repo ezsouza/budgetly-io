@@ -24,8 +24,8 @@ function DashboardContent() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">{t("dashboard.title")}</h1>
-            <p className="text-slate-600">{t("dashboard.subtitle")}</p>
+            <h1 className="text-3xl font-bold text-foreground">{t("dashboard.title")}</h1>
+            <p className="text-muted-foreground">{t("dashboard.subtitle")}</p>
           </div>
           <div className="flex gap-2">
             <Link href="/transactions">
@@ -61,7 +61,7 @@ function DashboardContent() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Suspense fallback={<div className="h-64 bg-slate-100 animate-pulse rounded" />}>
+              <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded" />}>
                 <ExpenseChart data={monthData} />
               </Suspense>
             </CardContent>
@@ -120,7 +120,7 @@ function DashboardContent() {
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 p-4">
       <Suspense fallback={<div className="p-4">Loading...</div>}>
         <DashboardContent />
       </Suspense>

@@ -152,7 +152,7 @@ export default function EditTransactionForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 p-4">
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
@@ -162,8 +162,8 @@ export default function EditTransactionForm() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">{t("editTransaction.headerTitle")}</h1>
-            <p className="text-slate-600">{t("editTransaction.headerSubtitle")}</p>
+            <h1 className="text-2xl font-bold text-foreground">{t("editTransaction.headerTitle")}</h1>
+            <p className="text-muted-foreground">{t("editTransaction.headerSubtitle")}</p>
           </div>
         </div>
 
@@ -268,7 +268,7 @@ export default function EditTransactionForm() {
 
               {/* Recurring Options for Incomes and Fixed Expenses */}
               {formData.type !== "variable" && (
-                <div className="space-y-4 p-4 bg-slate-50 rounded-lg">
+                <div className="space-y-4 p-4 bg-muted rounded-lg">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="recurring">{t("addTransaction.recurringTransaction")}</Label>
                     <Switch

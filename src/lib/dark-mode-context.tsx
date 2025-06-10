@@ -9,19 +9,13 @@ interface DarkModeContextValue {
 const DarkModeContext = createContext<DarkModeContextValue | undefined>(undefined)
 
 export function DarkModeProvider({ children }: { children: React.ReactNode }) {
-  const [isDark, setIsDark] = useState(false)
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window === 'undefined') return false
     const stored = localStorage.getItem('theme')
-    if (stored === 'dark') {
-      setIsDark(true)
-    } else if (stored === 'light') {
-      setIsDark(false)
-    } else {
-      setIsDark(window.matchMedia('(prefers-color-scheme: dark)').matches)
-    }
-  }, [])
+    if (stored === 'dark') return true
+    if (stored === 'light') return false
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+  })
 
   useEffect(() => {
     if (typeof window === 'undefined') return

@@ -54,7 +54,7 @@ export function MonthNavigation({ currentMonth }: MonthNavigationProps) {
     : `/annual-overview?month=${currentMonth}`
 
   return (
-    <div className="space-y-2 bg-white rounded-lg p-4 shadow-sm">
+    <div className="space-y-2 bg-card text-card-foreground rounded-lg p-4 shadow-sm">
       <div className="flex items-center justify-between">
         <Button
           variant="outline"
@@ -66,7 +66,7 @@ export function MonthNavigation({ currentMonth }: MonthNavigationProps) {
           {t("monthNavigation.previous")}
         </Button>
 
-        <h2 className="text-xl font-semibold text-slate-900">
+        <h2 className="text-xl font-semibold text-foreground">
           {formatMonth(currentMonth)}
         </h2>
 

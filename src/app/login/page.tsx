@@ -23,8 +23,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-4">
-      <form onSubmit={handleSubmit} className="space-y-6 max-w-sm w-full bg-white p-6 rounded-lg shadow">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 p-4">
+      <form onSubmit={handleSubmit} className="space-y-6 max-w-sm w-full bg-card text-card-foreground p-6 rounded-lg shadow">
         <div className="space-y-2">
           <Label htmlFor="email">{t("login.email")}</Label>
           <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
