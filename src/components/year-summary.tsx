@@ -24,7 +24,7 @@ export function YearSummary({ year }: YearSummaryProps) {
         <Link
           href={`/transactions?month=${year}-${m.month.toString().padStart(2, "0")}`}
           key={m.month}
-          className="p-3 bg-slate-50 rounded shadow-sm text-center block"
+          className="p-3 bg-card text-card-foreground rounded shadow-sm text-center block"
         >
           <div className="font-medium">
             {new Date(year, m.month - 1).toLocaleDateString(locale, {

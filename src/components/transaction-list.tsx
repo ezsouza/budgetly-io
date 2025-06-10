@@ -34,13 +34,13 @@ export function TransactionList({ transactions }: TransactionListProps) {
   const getTypeColor = (type: string) => {
     switch (type) {
       case "income":
-        return "bg-green-100 text-green-800"
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
       case "fixed":
-        return "bg-blue-100 text-blue-800"
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
       case "variable":
-        return "bg-red-100 text-red-800"
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
     }
   }
 
@@ -64,7 +64,7 @@ export function TransactionList({ transactions }: TransactionListProps) {
 
   if (txs.length === 0) {
     return (
-      <div className="text-center py-12 text-slate-500">
+      <div className="text-center py-12 text-muted-foreground">
         <p className="text-lg">{t("transactionList.noTransactions1")}</p>
         <p className="text-sm mt-2">{t("transactionList.noTransactions2")}</p>
       </div>
@@ -76,20 +76,20 @@ export function TransactionList({ transactions }: TransactionListProps) {
       {sortedTransactions.map((transaction) => (
         <div
           key={transaction.id}
-          className="flex flex-col sm:flex-row justify-between gap-3 p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow"
+          className="flex flex-col sm:flex-row justify-between gap-3 p-4 bg-card text-card-foreground border rounded-lg shadow-sm hover:shadow-md transition-shadow"
         >
           <div className="flex items-start gap-4 flex-1">
             {getTypeIcon(transaction.type)}
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-medium text-slate-900">{transaction.description}</h3>
+                <h3 className="font-medium text-foreground">{transaction.description}</h3>
                 {transaction.isRecurring && (
                   <Badge variant="outline" className="text-xs">
                     {t("transactionList.recurring")}
                   </Badge>
                 )}
               </div>
-              <div className="flex items-center gap-2 text-sm text-slate-600">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Badge variant="secondary" className={getTypeColor(transaction.type)}>
                   {transaction.type}
                 </Badge>

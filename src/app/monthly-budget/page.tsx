@@ -17,7 +17,7 @@ function PageContent() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      <h1 className="text-3xl font-bold text-slate-900">{t("monthlyBudgetPage.title")}</h1>
+      <h1 className="text-3xl font-bold text-foreground">{t("monthlyBudgetPage.title")}</h1>
       <Suspense fallback={<div>{t("common.loading")}</div>}>
         <MonthNavigation currentMonth={currentMonth} />
       </Suspense>
@@ -27,7 +27,7 @@ function PageContent() {
           <CardTitle>{t("dashboard.expenseBreakdown")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <Suspense fallback={<div className="h-64 bg-slate-100 animate-pulse rounded" />}>
+          <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded" />}>
             <ExpenseChart data={monthData} />
           </Suspense>
         </CardContent>
@@ -38,7 +38,7 @@ function PageContent() {
 
 export default function MonthlyBudgetPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 p-4">
       <Suspense fallback={<div className="p-4">Loading...</div>}>
         <PageContent />
       </Suspense>

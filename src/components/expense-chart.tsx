@@ -41,7 +41,7 @@ export function ExpenseChart({ data }: ExpenseChartProps) {
   ]
 
   if (totalExpenses === 0) {
-    return <div className="text-center py-8 text-slate-500">{t("expenseChart.noExpenses")}</div>
+    return <div className="text-center py-8 text-muted-foreground">{t("expenseChart.noExpenses")}</div>
   }
 
   return (
@@ -51,12 +51,12 @@ export function ExpenseChart({ data }: ExpenseChartProps) {
         return (
           <div key={category} className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm font-medium text-slate-700">{category}</span>
-              <span className="text-sm text-slate-600">
+              <span className="text-sm font-medium text-foreground">{category}</span>
+              <span className="text-sm text-muted-foreground">
                 {formatCurrency(amount)} ({percentage.toFixed(1)}%)
               </span>
             </div>
-            <div className="w-full bg-slate-200 rounded-full h-2">
+            <div className="w-full bg-muted rounded-full h-2">
               <div
                 className={`h-2 rounded-full ${colors[index % colors.length]}`}
                 style={{ width: `${percentage}%` }}

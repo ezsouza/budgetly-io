@@ -26,7 +26,9 @@ export function CalendarMap({ data }: CalendarMapProps) {
       {Array.from({ length: daysInMonth }, (_, i) => {
         const value = dailyTotals[i]
         const positive = value >= 0
-        const color = positive ? "bg-green-100" : "bg-red-100"
+        const color = positive
+          ? "bg-green-100 dark:bg-green-900"
+          : "bg-red-100 dark:bg-red-900"
         return (
           <div
             key={i}

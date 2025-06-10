@@ -33,13 +33,13 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
   const getTypeColor = (type: string) => {
     switch (type) {
       case "income":
-        return "bg-green-100 text-green-800"
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
       case "fixed":
-        return "bg-blue-100 text-blue-800"
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
       case "variable":
-        return "bg-red-100 text-red-800"
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
     }
   }
 
@@ -51,7 +51,7 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
 
   if (recentTransactions.length === 0) {
     return (
-      <div className="text-center py-8 text-slate-500">
+      <div className="text-center py-8 text-muted-foreground">
         {t("recentTransactions.noTransactions")}
       </div>
     )
@@ -62,17 +62,17 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
       {recentTransactions.map((transaction) => (
         <div
           key={transaction.id}
-          className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-slate-50 rounded-lg"
+          className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-card text-card-foreground rounded-lg"
         >
           <div className="flex items-start gap-3 flex-1">
             {getTypeIcon(transaction.type)}
             <div>
-              <p className="font-medium text-slate-900">{transaction.description}</p>
+              <p className="font-medium text-foreground">{transaction.description}</p>
               <div className="flex items-center gap-2 mt-1">
                 <Badge variant="secondary" className={getTypeColor(transaction.type)}>
                   {transaction.type}
                 </Badge>
-                <span className="text-sm text-slate-500">{transaction.category}</span>
+                <span className="text-sm text-muted-foreground">{transaction.category}</span>
               </div>
             </div>
           </div>
@@ -86,7 +86,7 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
                 </Badge>
               )}
             </p>
-            <p className="text-sm text-slate-500">{new Date(transaction.date).toLocaleDateString()}</p>
+            <p className="text-sm text-muted-foreground">{new Date(transaction.date).toLocaleDateString()}</p>
           </div>
         </div>
       ))}

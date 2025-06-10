@@ -28,7 +28,7 @@ function OverviewContent() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      <h1 className="text-3xl font-bold text-slate-900">
+      <h1 className="text-3xl font-bold text-foreground">
         {t("overviewCalendar.title")}
       </h1>
       <Suspense fallback={<div>{t("common.loading")}</div>}>
@@ -75,7 +75,7 @@ function OverviewContent() {
 
       {currentView === "annual" && (
         <div>
-          <h2 className="text-xl font-semibold text-slate-900 mb-2">
+          <h2 className="text-xl font-semibold text-foreground mb-2">
             {t("overviewCalendar.annualStats")}
           </h2>
           <YearSummary year={Number(year)} />
@@ -87,7 +87,7 @@ function OverviewContent() {
 
 export default function AnnualOverviewPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 p-4">
       <Suspense fallback={<div className="p-4">Loading...</div>}>
         <OverviewContent />
       </Suspense>
