@@ -9,6 +9,7 @@ import { useI18n } from "@/lib/i18n-context"
 import { useCurrency } from "@/lib/currency-context"
 import { useState } from "react"
 import { deleteTransaction } from "@/lib/finance-data"
+import { getCreditCardById } from "@/lib/credit-cards"
 
 interface TransactionListProps {
   transactions: Transaction[]
@@ -96,6 +97,14 @@ export function TransactionList({ transactions }: TransactionListProps) {
                 <span>{transaction.category}</span>
                 <span>•</span>
                 <span>{new Date(transaction.date).toLocaleDateString()}</span>
+                {transaction.creditCardId && (
+                  <>
+                    <span>•</span>
+                    <Badge variant="outline">
+                      {getCreditCardById(transaction.creditCardId)?.name}
+                    </Badge>
+                  </>
+                )}
               </div>
             </div>
           </div>

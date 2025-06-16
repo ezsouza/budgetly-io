@@ -13,15 +13,26 @@ import { Switch } from "@/components/ui/switch"
 import { ArrowLeft, Save, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { getTransactionById, updateTransaction, deleteTransaction } from "@/lib/finance-data"
-import type { TransactionType, Currency } from "@/lib/types"
+import type { TransactionType, Currency, CreditCard } from "@/lib/types"
 import { useI18n } from "@/lib/i18n-context"
 import { useCurrency } from "@/lib/currency-context"
+import { getAllCreditCards, addCreditCard } from "@/lib/credit-cards"
 
 export default function EditTransactionForm() {
   const router = useRouter()
   const params = useParams()
   const { t } = useI18n()
   const { currency } = useCurrency()
+
+  const [creditCards, setCreditCards] = useState<CreditCard[]>(getAllCreditCards())
+  const [showNewCard, setShowNewCard] = useState(false)
+  const [newCard, setNewCard] = useState({
+    name: '',
+    brand: '',
+    closingDay: 1,
+    dueDay: 1,
+    limit: '',
+  })
 
   const [formData, setFormData] = useState({
     type: "variable" as TransactionType,
@@ -30,6 +41,8 @@ export default function EditTransactionForm() {
     description: "",
     category: "",
     date: new Date().toISOString().split("T")[0],
+    creditCardId: undefined as string | undefined,
+    includeInStatement: true,
     isRecurring: false,
     recurringMonths: undefined as number | undefined,
     recurrencePattern: "monthly",
@@ -50,6 +63,8 @@ export default function EditTransactionForm() {
         description: loaded.description,
         category: loaded.category,
         date: new Date(loaded.date).toISOString().split("T")[0],
+        creditCardId: loaded.creditCardId,
+        includeInStatement: loaded.includeInStatement ?? true,
         isRecurring: loaded.isRecurring || false,
         recurringMonths: loaded.recurringMonths,
         recurrencePattern: loaded.recurrencePattern || "monthly",
@@ -123,6 +138,8 @@ export default function EditTransactionForm() {
       description: formData.description,
       category: formData.category,
       date: new Date(formData.date),
+      creditCardId: formData.creditCardId,
+      includeInStatement: formData.includeInStatement,
       isRecurring: formData.isRecurring,
       recurringMonths: formData.recurringMonths,
       recurrencePattern: formData.recurrencePattern,
@@ -253,6 +270,89 @@ export default function EditTransactionForm() {
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* Credit Card Selection */}
+              <div className="space-y-2">
+                <Label>{t("addTransaction.creditCard")}</Label>
+                <Select
+                  value={formData.creditCardId || ""}
+                  onValueChange={(value) => {
+                    if (value === "__new__") {
+                      setShowNewCard(true)
+                      return
+                    }
+                    setFormData({ ...formData, creditCardId: value })
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={t("addTransaction.selectCard")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {creditCards.map((card) => (
+                      <SelectItem key={card.id} value={card.id}>
+                        {card.name}
+                      </SelectItem>
+                    ))}
+                    <SelectItem value="__new__">{t("addTransaction.newCard")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {showNewCard && (
+                <div className="space-y-2 p-4 border rounded-lg">
+                  <Label>{t("addCard.title")}</Label>
+                  <Input
+                    placeholder={t("addCard.name")}
+                    value={newCard.name}
+                    onChange={(e) => setNewCard({ ...newCard, name: e.target.value })}
+                  />
+                  <Input
+                    placeholder={t("addCard.brand")}
+                    value={newCard.brand}
+                    onChange={(e) => setNewCard({ ...newCard, brand: e.target.value })}
+                  />
+                  <div className="flex gap-2">
+                    <Input
+                      type="number"
+                      placeholder={t("addCard.closing")}
+                      value={newCard.closingDay}
+                      onChange={(e) => setNewCard({ ...newCard, closingDay: Number(e.target.value) })}
+                    />
+                    <Input
+                      type="number"
+                      placeholder={t("addCard.due")}
+                      value={newCard.dueDay}
+                      onChange={(e) => setNewCard({ ...newCard, dueDay: Number(e.target.value) })}
+                    />
+                  </div>
+                  <Input
+                    type="number"
+                    placeholder={t("addCard.limit")}
+                    value={newCard.limit}
+                    onChange={(e) => setNewCard({ ...newCard, limit: e.target.value })}
+                  />
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      const card = {
+                        id: Date.now().toString(),
+                        name: newCard.name,
+                        brand: newCard.brand,
+                        closingDay: newCard.closingDay,
+                        dueDay: newCard.dueDay,
+                        limit: Number(newCard.limit),
+                      }
+                      addCreditCard(card)
+                      setCreditCards(getAllCreditCards())
+                      setFormData({ ...formData, creditCardId: card.id })
+                      setNewCard({ name: '', brand: '', closingDay: 1, dueDay: 1, limit: '' })
+                      setShowNewCard(false)
+                    }}
+                  >
+                    {t("addCard.save")}
+                  </Button>
+                </div>
+              )}
 
               {/* Date */}
               <div className="space-y-2">
