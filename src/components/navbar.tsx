@@ -35,6 +35,9 @@ export function Navbar() {
           <LanguageSelector />
           <CurrencySelector />
           <ThemeToggle />
+          <Link href="/annual-overview">
+            <Button variant="ghost">{t("navbar.timeline")}</Button>
+          </Link>
           <Link href="/credit-cards">
             <Button variant="ghost">{t("navbar.wallet")}</Button>
           </Link>
@@ -72,6 +75,11 @@ export function Navbar() {
               <LanguageSelector />
               <CurrencySelector />
               <ThemeToggle />
+              <Link href="/annual-overview" onClick={() => setOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start">
+                  {t("navbar.timeline")}
+                </Button>
+              </Link>
               <Link href="/credit-cards" onClick={() => setOpen(false)}>
                 <Button variant="ghost" className="w-full justify-start">
                   {t("navbar.wallet")}

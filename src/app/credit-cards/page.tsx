@@ -34,15 +34,19 @@ export default function CreditCardsPage() {
           </CardHeader>
           <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {cards.map((card) => (
-              <div key={card.id} className="relative">
+              <div key={card.id} className="space-y-2">
                 <WalletCard card={card} />
-                <div className="absolute top-2 right-2 flex gap-1">
+                <div className="flex justify-end gap-1">
                   <Link href={`/edit-card/${card.id}`}>
                     <Button variant="ghost" size="icon">
                       <Pencil className="w-4 h-4" />
                     </Button>
                   </Link>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(card.id)}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDelete(card.id)}
+                  >
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
