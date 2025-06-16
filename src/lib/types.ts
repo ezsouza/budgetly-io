@@ -10,12 +10,25 @@ export interface Transaction {
   description: string
   category: string
   date: Date
+  /** Optional credit card this transaction is linked to */
+  creditCardId?: string
+  /** Whether this amount should be included in card statement calculations */
+  includeInStatement?: boolean
   isRecurring?: boolean
   recurringMonths?: number
   recurrencePattern?: "monthly" | "semi-annually" | "annually" | "custom"
   customMonths?: number[]
   startDate?: Date
   endDate?: Date
+}
+
+export interface CreditCard {
+  id: string
+  name: string
+  brand: string
+  closingDay: number
+  dueDay: number
+  limit: number
 }
 
 export interface MonthData {
