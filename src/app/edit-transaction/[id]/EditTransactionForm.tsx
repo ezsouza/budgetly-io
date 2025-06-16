@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { ArrowLeft, Save, Trash2 } from "lucide-react"
 import Link from "next/link"
-import { getTransactionById, updateTransaction, deleteTransaction } from "@/lib/finance-data"
+import { getTransactionById, updateTransaction, deleteTransaction, willExceedCreditLimit } from "@/lib/finance-data"
 import type { TransactionType, Currency, CreditCard } from "@/lib/types"
 import { useI18n } from "@/lib/i18n-context"
 import { useCurrency } from "@/lib/currency-context"
@@ -150,6 +150,22 @@ export default function EditTransactionForm() {
         : formData.endDate
         ? new Date(formData.endDate)
         : undefined,
+    }
+
+    if (
+      updated.creditCardId &&
+      willExceedCreditLimit(
+        updated.creditCardId,
+        updated.amount,
+        updated.date,
+        params.id as string
+      )
+    ) {
+      const adjust = window.confirm(t("addTransaction.limitExceeded"))
+      if (adjust) {
+        router.push(`/edit-card/${updated.creditCardId}`)
+      }
+      return
     }
 
     updateTransaction(params.id as string, updated)
