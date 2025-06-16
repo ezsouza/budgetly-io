@@ -1,4 +1,5 @@
 import type { Transaction, MonthData, Currency } from "./types"
+import { getCreditCardById } from "./credit-cards"
 
 const rates: Record<Currency, number> = { USD: 1, BRL: 5, EUR: 0.9 }
 const BASE_CURRENCY: Currency = "USD"
@@ -144,6 +145,37 @@ export function getMonthData(month: string): MonthData {
 
 export function addTransaction(transaction: Transaction): void {
   transactions.push(transaction)
+}
+
+export function getCardMonthlyExpenses(
+  cardId: string,
+  date: Date,
+  excludeId?: string
+): number {
+  const year = date.getFullYear()
+  const month = date.getMonth() + 1
+  return transactions
+    .filter(
+      (t) =>
+        t.creditCardId === cardId &&
+        t.id !== excludeId &&
+        t.type !== "income" &&
+        occursInMonth(t, year, month) &&
+        (t.includeInStatement ?? true)
+    )
+    .reduce((sum, t) => sum + toBase(t.amount, t.currency), 0)
+}
+
+export function willExceedCreditLimit(
+  cardId: string,
+  amount: number,
+  date: Date,
+  excludeId?: string
+): boolean {
+  const card = getCreditCardById(cardId)
+  if (!card) return false
+  const total = getCardMonthlyExpenses(cardId, date, excludeId)
+  return total + amount > card.limit
 }
 
 export function updateTransaction(id: string, updated: Partial<Transaction>): void {
