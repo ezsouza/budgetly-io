@@ -35,6 +35,9 @@ export function Navbar() {
           <LanguageSelector />
           <CurrencySelector />
           <ThemeToggle />
+          <Link href="/credit-cards">
+            <Button variant="ghost">{t("navbar.wallet")}</Button>
+          </Link>
           {user ? (
             <>
               <span className="text-sm text-slate-600 dark:text-slate-300">{t("navbar.hello")} {user}</span>
@@ -69,6 +72,11 @@ export function Navbar() {
               <LanguageSelector />
               <CurrencySelector />
               <ThemeToggle />
+              <Link href="/credit-cards" onClick={() => setOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start">
+                  {t("navbar.wallet")}
+                </Button>
+              </Link>
               {user ? (
                 <>
                   <span className="text-sm text-slate-600 dark:text-slate-300">{t("navbar.hello")} {user}</span>

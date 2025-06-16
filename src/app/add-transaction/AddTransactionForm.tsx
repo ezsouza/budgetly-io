@@ -241,31 +241,37 @@ export default function AddTransactionForm() {
               </div>
 
               {/* Credit Card Selection */}
-              <div className="space-y-2">
-                <Label>{t("addTransaction.creditCard")}</Label>
-                <Select
-                  value={formData.creditCardId || ""}
-                  onValueChange={(value) => {
-                    if (value === "__new__") {
-                      setShowNewCard(true)
-                      return
-                    }
-                    setFormData({ ...formData, creditCardId: value })
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={t("addTransaction.selectCard")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {creditCards.map((card) => (
-                      <SelectItem key={card.id} value={card.id}>
-                        {card.name}
-                      </SelectItem>
-                    ))}
-                    <SelectItem value="__new__">{t("addTransaction.newCard")}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              {formData.type !== "income" && (
+                <div className="space-y-2">
+                  <Label>{t("addTransaction.creditCard")}</Label>
+                  <Select
+                    value={formData.creditCardId || "none"}
+                    onValueChange={(value) => {
+                      if (value === "__new__") {
+                        setShowNewCard(true)
+                        return
+                      }
+                      setFormData({
+                        ...formData,
+                        creditCardId: value === "none" ? undefined : value,
+                      })
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={t("addTransaction.selectCard")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">{t("addTransaction.noCard")}</SelectItem>
+                      {creditCards.map((card) => (
+                        <SelectItem key={card.id} value={card.id}>
+                          {card.name}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="__new__">{t("addTransaction.newCard")}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               {showNewCard && (
                 <div className="space-y-2 p-4 border rounded-lg">
