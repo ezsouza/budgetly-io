@@ -39,6 +39,7 @@ function OverviewContent() {
           variant={currentView === "transactions" ? "default" : "outline"}
           size="sm"
           onClick={() => setView("transactions")}
+          className="w-full sm:w-auto"
         >
           {t("overviewCalendar.viewTransactions")}
         </Button>
@@ -46,6 +47,7 @@ function OverviewContent() {
           variant={currentView === "daily" ? "default" : "outline"}
           size="sm"
           onClick={() => setView("daily")}
+          className="w-full sm:w-auto"
         >
           {t("overviewCalendar.viewDaily")}
         </Button>
@@ -53,6 +55,7 @@ function OverviewContent() {
           variant={currentView === "annual" ? "default" : "outline"}
           size="sm"
           onClick={() => setView("annual")}
+          className="w-full sm:w-auto"
         >
           {t("overviewCalendar.viewAnnual")}
         </Button>
