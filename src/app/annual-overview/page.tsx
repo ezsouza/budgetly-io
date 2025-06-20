@@ -34,7 +34,7 @@ function OverviewContent() {
       <Suspense fallback={<div>{t("common.loading")}</div>}>
         <MonthNavigation currentMonth={currentMonth} />
       </Suspense>
-      <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
         <Button
           variant={currentView === "transactions" ? "default" : "outline"}
           size="sm"
