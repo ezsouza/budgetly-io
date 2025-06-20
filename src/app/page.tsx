@@ -29,13 +29,16 @@ function DashboardContent() {
           </div>
           <div className="flex flex-col sm:flex-row gap-2">
             <Link href="/transactions">
-              <Button variant="outline" className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                className="w-full sm:w-auto flex items-center gap-2"
+              >
                 <Pencil className="w-4 h-4" />
                 {t("dashboard.editTransactions")}
               </Button>
             </Link>
             <Link href="/add-transaction">
-              <Button className="flex items-center gap-2">
+              <Button className="w-full sm:w-auto flex items-center gap-2">
                 <Plus className="w-4 h-4" />
                 {t("dashboard.addTransaction")}
               </Button>
