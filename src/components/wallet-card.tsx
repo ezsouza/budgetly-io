@@ -1,6 +1,7 @@
 "use client"
 import type { CreditCard } from "@/lib/types"
 import { cn } from "@/lib/utils"
+import { useI18n } from "@/lib/i18n-context"
 
 interface WalletCardProps {
   card: CreditCard
@@ -8,6 +9,7 @@ interface WalletCardProps {
 }
 
 export function WalletCard({ card, className }: WalletCardProps) {
+  const { t } = useI18n()
   return (
     <div
       className={cn(
@@ -17,12 +19,18 @@ export function WalletCard({ card, className }: WalletCardProps) {
     >
       <div className="flex justify-between text-sm">
         <span className="uppercase font-semibold">{card.brand}</span>
-        <span>Limit {card.limit}</span>
+        <span>
+          {t("wallet.limit")} {card.limit}
+        </span>
       </div>
       <div className="text-lg font-medium">{card.name}</div>
       <div className="flex justify-between text-xs">
-        <span>Closing {card.closingDay}</span>
-        <span>Due {card.dueDay}</span>
+        <span>
+          {t("wallet.closing")} {card.closingDay}
+        </span>
+        <span>
+          {t("wallet.due")} {card.dueDay}
+        </span>
       </div>
     </div>
   )
