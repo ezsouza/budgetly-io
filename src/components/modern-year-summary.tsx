@@ -51,31 +51,39 @@ export function ModernYearSummary({ year }: ModernYearSummaryProps) {
 
   const getCardStyle = (net: number) => {
     if (net > 0) {
-      return "bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/30 border-green-200 dark:border-green-800 hover:shadow-green-200/50 dark:hover:shadow-green-900/30"
+      return "bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/30 border-green-200 dark:border-green-800 hover:shadow-green-200/50 dark:hover:shadow-green-900/30 hover:border-green-300 dark:hover:border-green-700"
     } else if (net < 0) {
-      return "bg-gradient-to-br from-red-50 to-rose-100 dark:from-red-900/20 dark:to-rose-900/30 border-red-200 dark:border-red-800 hover:shadow-red-200/50 dark:hover:shadow-red-900/30"
+      return "bg-gradient-to-br from-red-50 to-rose-100 dark:from-red-900/20 dark:to-rose-900/30 border-red-200 dark:border-red-800 hover:shadow-red-200/50 dark:hover:shadow-red-900/30 hover:border-red-300 dark:hover:border-red-700"
     } else {
-      return "bg-gradient-to-br from-gray-50 to-slate-100 dark:from-gray-900/20 dark:to-slate-900/30 border-gray-200 dark:border-gray-700 hover:shadow-gray-200/50 dark:hover:shadow-gray-900/30"
+      return "bg-gradient-to-br from-gray-50 to-slate-100 dark:from-gray-900/20 dark:to-slate-900/30 border-gray-200 dark:border-gray-700 hover:shadow-gray-200/50 dark:hover:shadow-gray-900/30 hover:border-gray-300 dark:hover:border-gray-600"
     }
   }
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {monthsWithTrend.map((m) => (
+      {monthsWithTrend.map((m, index) => (
         <Link
           href={`/transactions?month=${year}-${m.month.toString().padStart(2, "0")}`}
           key={m.month}
           className="group block"
+          style={{
+            animationDelay: `${index * 50}ms`,
+            animation: 'fadeInUp 0.6s ease-out forwards'
+          }}
         >
           <div
             className={`
-              relative overflow-hidden rounded-2xl p-6 border transition-all duration-300
-              hover:scale-105 hover:shadow-xl transform-gpu
+              relative overflow-hidden rounded-2xl p-6 border transition-all duration-300 ease-out
+              hover:scale-105 hover:shadow-2xl hover:-translate-y-1 transform-gpu
+              active:scale-95 active:transition-none
               ${getCardStyle(m.net)}
             `}
           >
             {/* Background pattern */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent dark:from-white/5" />
+            <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent dark:from-white/5 pointer-events-none" />
+            
+            {/* Subtle radial gradient for depth */}
+            <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-black/5 dark:to-white/5 pointer-events-none" />
             
             {/* Card content */}
             <div className="relative z-10">
@@ -126,7 +134,7 @@ export function ModernYearSummary({ year }: ModernYearSummaryProps) {
             </div>
 
             {/* Hover effect overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute inset-0 bg-gradient-to-br from-white/0 to-white/0 group-hover:from-white/10 group-hover:to-white/5 dark:group-hover:from-white/5 dark:group-hover:to-white/2 transition-all duration-300 pointer-events-none" />
           </div>
         </Link>
       ))}
