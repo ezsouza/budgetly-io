@@ -1,14 +1,11 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
 import "./globals.css"
 import { AuthProvider } from "@/lib/auth-context"
 import { I18nProvider } from "@/lib/i18n-context"
 import { CurrencyProvider } from "@/lib/currency-context"
 import { Navbar } from "@/components/navbar"
 import { DarkModeProvider } from "@/lib/dark-mode-context"
-
-const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Personal Finance Tracker",
@@ -23,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className="font-sans">{/* Using default font for now */}
         <DarkModeProvider>
           <I18nProvider>
             <CurrencyProvider>
